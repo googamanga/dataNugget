@@ -118,7 +118,6 @@
 
       train: function (data, options) {
         data = this.formatData(data);
-
         options = options || {};
         var iterations = options.iterations || 20000;
         var errorThresh = options.errorThresh || 0.005;
@@ -138,7 +137,6 @@
         this.initialize(sizes);
 
         var error = 1;
-        debugger
         for (var i = 0; i < iterations && error > errorThresh; i++) {
           var sum = 0;
           for (var j = 0; j < data.length; j++) {

@@ -1,4 +1,4 @@
-
+`
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,6 +7,7 @@
   <script src="assets/js/jquery-1.4.2.min.js"></script>
   <script src="assets/js/brain.js"></script>
   <script src="assets/js/handlebars.js"></script>
+  <script src="lib/csvToObject.js"></script>
   <!--<script src="assets/js/blackorwhite.js"></script>-->
 
   <title>dataNugget</title>
@@ -14,7 +15,56 @@
 
 <body>
   <h1>dataNugget</h1>
-  <textarea id='inputData' rows='10' cols='90'></textarea>
+  <textarea id='inputCsv' rows='10' cols='90'>
+FCTNO,VLTY,TIME,STRIKE,OPRICE
+0.000653595,0.1,0.333333333,0.6,0.777970369
+0.00130719,0.1,0.333333333,0.608,0.746851554
+0.001960784,0.1,0.333333333,0.616,0.715732739
+0.002614379,0.1,0.333333333,0.624,0.684613924
+0.003267974,0.1,0.333333333,0.632,0.65349511
+0.003921569,0.1,0.333333333,0.64,0.622376295
+0.004575163,0.1,0.333333333,0.648,0.59125748
+0.005228758,0.1,0.333333333,0.656,0.560138665
+0.005882353,0.1,0.333333333,0.664,0.529019851
+0.006535948,0.1,0.333333333,0.672,0.497901036
+0.007189542,0.1,0.333333333,0.68,0.466782221
+0.007843137,0.1,0.333333333,0.688,0.435663406
+0.008496732,0.1,0.333333333,0.696,0.404544592
+0.009150327,0.1,0.333333333,0.704,0.373425777
+0.009803922,0.1,0.333333333,0.712,0.342306962
+0.010457516,0.1,0.333333333,0.72,0.311191259
+0.011111111,0.1,0.333333333,0.728,0.280078668
+0.011764706,0.1,0.333333333,0.736,0.248987861
+0.012418301,0.1,0.333333333,0.744,0.217965514
+0.013071895,0.1,0.333333333,0.752,0.187132992
+0.01372549,0.1,0.333333333,0.76,0.156751694
+0.014379085,0.1,0.333333333,0.768,0.127300847
+0.01503268,0.1,0.333333333,0.776,0.099505522
+0.015686275,0.1,0.333333333,0.784,0.074280611
+0.016339869,0.1,0.333333333,0.792,0.052547231
+0.016993464,0.1,0.333333333,0.8,0.034974436
+0.017647059,0.1,0.333333333,0.808,0.021758275
+0.018300654,0.1,0.333333333,0.816,0.012587561
+0.018954248,0.1,0.333333333,0.824,0.006743447
+0.019607843,0.1,0.333333333,0.832,0.003335937
+0.020261438,0.1,0.333333333,0.84,0.001518598
+0.020915033,0.1,0.333333333,0.848,0.000637936
+0.021568627,0.1,0.333333333,0.856,0.000245839
+0.022222222,0.1,0.333333333,0.864,8.71327E-05
+0.022875817,0.1,0.333333333,0.872,2.80069E-05
+0.023529412,0.1,0.333333333,0.88,9.33564E-06
+0.024183007,0.1,0.333333333,0.888,3.11188E-06
+0.024836601,0.1,0.333333333,0.896,0
+0.025490196,0.1,0.333333333,0.904,0
+0.026143791,0.1,0.333333333,0.912,0
+0.026797386,0.1,0.333333333,0.92,0
+0.02745098,0.1,0.333333333,0.928,0
+0.028104575,0.1,0.333333333,0.936,0
+0.02875817,0.1,0.333333333,0.944,0
+0.029411765,0.1,0.333333333,0.952,0
+0.030065359,0.1,0.333333333,0.96,0
+
+</textarea>
   <button type='button' >Input Data</button>
   <div id="progress-bar">
   <div id="progress-completed">
@@ -60,6 +110,8 @@
               worker.postMessage(JSON.stringify(dataForWorker));
               console.log('done with worker');
             } else {
+              var net = new brain.NeuralNetwork();
+              net.train(inputData, this.parameters);
               console.log("COULDN'T RUN WORKER, ALL IS LOST!")
             }
           },
@@ -67,7 +119,7 @@
           onMessage : function(event) {
             var workerData = JSON.parse(event.data);
             if(workerData.type == 'progress') {
-              trainer.showProgress(workerData);
+              app.trainer.showProgress(workerData);
             }
             else if(workerData.type == 'result') {
               var net = new brain.NeuralNetwork().fromJSON(workerData.net);
@@ -100,13 +152,13 @@
 
       $('button').click(function(e){
         console.log("clicked!");
-        console.log('val:', $('#inputData').val() );
-        // debugger
-        if( $('#inputData').val() ){
-          app.csvData = $('#inputData').val();
+        console.log('val straight from input:', $('#inputCsv').val() );
+        if( $('#inputCsv').val() ){
+          app.csvData = $('#inputCsv').val();
           app.csvToTable();
-          app.inputData
-          app.trainer.trainNetwork();
+          app.inputData = csvToObject(app.csvData, 'OPRICE', ['FCTNO']);
+          console.log(app.inputData);
+          app.trainer.trainNetwork(app.inputData);
         } else {
           console.log('inputData is empty');
         }
