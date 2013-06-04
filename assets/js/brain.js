@@ -138,6 +138,7 @@
         this.initialize(sizes);
 
         var error = 1;
+        debugger
         for (var i = 0; i < iterations && error > errorThresh; i++) {
           var sum = 0;
           for (var j = 0; j < data.length; j++) {
