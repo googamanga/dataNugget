@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="assets/styles/blackorwhite.css">
+
+  <script src="assets/js/jquery-1.4.2.min.js"></script>
+  <script src="assets/js/brain.js"></script>
+  <script src="assets/js/handlebars.js"></script>
+  <!--<script src="assets/js/blackorwhite.js"></script>-->
+
+  <title>dataNugget</title>
+</head>
+
+<body>
+  <h1>dataNugget</h1>
+  <div id="progress-bar">
+  <div id="progress-completed">
+  <script type="text/javascript">
+
+
+    var net = new brain.NeuralNetwork();
+
+    var trainer = {
+      data: [{input: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], output: [0]},
+               {input: [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], output: [1]},
+               {input: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], output: [1]},
+               {input: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], output: [0]},
+               {input: [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], output: [1]},
+               {input: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], output: [1]},
+               {input: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], output: [0]},
+               {input: [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], output: [1]},
+               {input: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], output: [0]},
+               {input: [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], output: [1]},
+               {input: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], output: [1]},
+               {input: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], output: [0]}],
+
+      trainNetwork : function() {
+
+        if(window.Worker) {
+          console.log('start with worker');
+          var worker = new Worker("assets/js/training-worker.js");
+          worker.onmessage = this.onMessage;
+          worker.onerror = this.onError;
+          worker.postMessage(JSON.stringify(this.data));
+          console.log('done with worker');
+        }
+        else {
+          console.log('start with out worker');
+          var net = new brain.NeuralNetwork();
+          net.train(this.data, {
+            iterations: 9000
+          });
+          console.log('done with out worker');
+        }
+      },
+
+      onMessage : function(event) {
+        var data = JSON.parse(event.data);
+        if(data.type == 'progress') {
+          trainer.showProgress(data);
+        }
+        else if(data.type == 'result') {
+          var net = new brain.NeuralNetwork().fromJSON(data.net);
+          $("#progress-bar").hide();
+          console.log('done!');
+          var output = net.run([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+          $('body').append($('<p>output: ' + output + '<p>'))
+          output = net.run([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+          $('body').append($('<p>output: ' + output + '<p>'))
+          output = net.run([0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]);
+          $('body').append($('<p>output: ' + output + '<p>'))
+          output = net.run([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]);
+          $('body').append($('<p>output: ' + output + '<p>'))
+        }
+      },
+
+      onError : function(event) {
+        $("#training-message").text("error training network: " + event.message);
+      },
+
+      showProgress : function(progress) {
+        console.log(progress.iterations);
+        console.log(trainer.iterations);
+        var completed = progress.iterations / 9000 * 100;
+        console.log('complete %:', completed);
+        $("#progress-completed").css("width", completed + "%");
+      }
+    }
+
+    trainer.trainNetwork();
+  </script>
+</body>
+</html>
+
+<!-- test: http://www.scientific-consultants.com/nnbd.html -->
