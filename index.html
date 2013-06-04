@@ -22,7 +22,7 @@
     var net = new brain.NeuralNetwork();
 
     var trainer = {
-      data: [{input: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], output: [0]},
+      inputData: [{input: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], output: [0]},
                {input: [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], output: [1]},
                {input: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], output: [1]},
                {input: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], output: [0]},
@@ -42,13 +42,13 @@
           var worker = new Worker("assets/js/training-worker.js");
           worker.onmessage = this.onMessage;
           worker.onerror = this.onError;
-          worker.postMessage(JSON.stringify(this.data));
+          worker.postMessage(JSON.stringify(this.inputData));
           console.log('done with worker');
         }
         else {
           console.log('start with out worker');
           var net = new brain.NeuralNetwork();
-          net.train(this.data, {
+          net.train(this.inputData, {
             iterations: 9000
           });
           console.log('done with out worker');
@@ -56,12 +56,12 @@
       },
 
       onMessage : function(event) {
-        var data = JSON.parse(event.data);
-        if(data.type == 'progress') {
-          trainer.showProgress(data);
+        var workerData = JSON.parse(event.data);
+        if(workerData.type == 'progress') {
+          trainer.showProgress(workerData);
         }
-        else if(data.type == 'result') {
-          var net = new brain.NeuralNetwork().fromJSON(data.net);
+        else if(workerData.type == 'result') {
+          var net = new brain.NeuralNetwork().fromJSON(workerData.net);
           $("#progress-bar").hide();
           console.log('done!');
           var output = net.run([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
