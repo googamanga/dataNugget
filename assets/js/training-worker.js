@@ -1,14 +1,14 @@
 importScripts("brain.js");
 
 onmessage = function(event) {
-  var data = JSON.parse(event.data);
+  var args = JSON.parse(event.data);
+  var parameters = args[0];
+  var data = args[1];
   var net = new brain.NeuralNetwork();
 
-  net.train(data, {
-    iterations: 9000,
-    callback: postProgress,
-    callbackPeriod: 1000
-  });
+  parameters.callback = postProgress;
+
+  net.train(data, parameters);
 
   postMessage(JSON.stringify({type: 'result', net: net.toJSON()}));
 };

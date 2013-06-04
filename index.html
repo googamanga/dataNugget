@@ -22,6 +22,11 @@
     var net = new brain.NeuralNetwork();
 
     var trainer = {
+      parameters: {
+        iterations: 90000,
+        callbackPeriod: 1000 //num of iterations, not miliseconds!
+      },
+
       inputData: [{input: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], output: [0]},
                {input: [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], output: [1]},
                {input: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], output: [1]},
@@ -36,21 +41,21 @@
                {input: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], output: [0]}],
 
       trainNetwork : function() {
-
         if(window.Worker) {
           console.log('start with worker');
           var worker = new Worker("assets/js/training-worker.js");
           worker.onmessage = this.onMessage;
           worker.onerror = this.onError;
-          worker.postMessage(JSON.stringify(this.inputData));
+          var dataForWorker = [];
+          dataForWorker.push(this.parameters);
+          dataForWorker.push(this.inputData);
+          worker.postMessage(JSON.stringify(dataForWorker));
           console.log('done with worker');
         }
         else {
           console.log('start with out worker');
           var net = new brain.NeuralNetwork();
-          net.train(this.inputData, {
-            iterations: 9000
-          });
+          net.train(this.inputData, this.parameters);
           console.log('done with out worker');
         }
       },
@@ -80,10 +85,8 @@
       },
 
       showProgress : function(progress) {
-        console.log(progress.iterations);
-        console.log(trainer.iterations);
-        var completed = progress.iterations / 9000 * 100;
-        console.log('complete %:', completed);
+        var completed = progress.iterations / this.parameters.iterations * 100;
+        console.log('complete %:', Math.round(completed, 1), 'error:', progress.error);
         $("#progress-completed").css("width", completed + "%");
       }
     }
