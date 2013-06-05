@@ -1564,12 +1564,12 @@ FCTNO,VLTY,TIME,STRIKE,OPRICE
         this.csvToTable = function(){
           try{
             var lines = this.csvData.split("\n"), output = [];
-            for(var i = 0; i < lines.length; i++)
+            for(var i = 0; i < 5; i++)
                 output.push("<tr><td>"
                             + lines[i].slice(0,-1).split(",").join("</td><td>")
                             + "</td></tr>");
             output = "<table>" + output.join("") + "</table>";
-            // $('body').append(output);
+            $('body').append(output);
           } catch(err){
             cnosole.log("could not convert csv to table, try again, err:", err);
           }
@@ -1577,9 +1577,9 @@ FCTNO,VLTY,TIME,STRIKE,OPRICE
 
         this.trainer = {
           parameters: {
-            iterations: 9000,
-            errorThresh: 0.000004,
-            callbackPeriod: 1000 //num of iterations, not miliseconds!
+            iterations: 5000,
+            errorThresh: 0.00004,
+            callbackPeriod: 100 //num of iterations, not miliseconds!
           },
 
           trainNetwork : function(inputData) {
@@ -1609,16 +1609,12 @@ FCTNO,VLTY,TIME,STRIKE,OPRICE
               var net = new brain.NeuralNetwork().fromJSON(workerData.net);
               $("#progress-bar").hide();
               console.log('done!');
-              var output = net.run({ r: 1, g: 0.4, b: 0 });  // { white: 0.99, black: 0.002 }
-              $('body').append($('<p>output: ' + output.black + 'should be 0.368804632969139 <p>'));
-              var output = net.run({ r: 1, g: 0.4, b: 0 });  // { white: 0.99, black: 0.002 }
-              $('body').append($('<p>output: ' + output.white + 'should be 0.368804632969139 <p>'));
               output = net.run({"VLTY":"1","TIME":"0.666666666667","STRIKE":".992"});
-              $('body').append($('<p>output: ' + output['OPRICE'] + 'should be 0.2538<p>'))
+              $('body').append($('<p>output: ' + Math.round(output['OPRICE']*100)/100 + ' should be 0.25<p>'))
               output = net.run({"VLTY":"0.7","TIME":"0.333333333","STRIKE":"0.912"});
-              $('body').append($('<p>output: ' + output['OPRICE'] + 'should be 0.099119649 <p>'))
+              $('body').append($('<p>output: ' + Math.round(output['OPRICE']*100)/100 + ' should be 0.10 <p>'))
               output = net.run({"VLTY":"0.2","TIME":"0.666666666667","STRIKE":"0.728"});
-              $('body').append($('<p>output: ' + output['OPRICE'] + 'should be 0.293786506 <p>'))
+              $('body').append($('<p>output: ' + Math.round(output['OPRICE']*100)/100 + ' should be 0.29 <p>'))
             }
           },
 
@@ -1638,7 +1634,8 @@ FCTNO,VLTY,TIME,STRIKE,OPRICE
 
       $('button').click(function(e){
         console.log("clicked!");
-        console.log('val straight from input:', $('#inputCsv').val() );
+        // $("#progress-bar").show();
+        // console.log('val straight from input:', $('#inputCsv').val() );
         if( $('#inputCsv').val() ){
           app.csvData = $('#inputCsv').val();
           app.csvToTable();
