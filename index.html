@@ -1577,7 +1577,7 @@ FCTNO,VLTY,TIME,STRIKE,OPRICE
 
         this.trainer = {
           parameters: {
-            iterations: 90000,
+            iterations: 9000,
             errorThresh: 0.000004,
             callbackPeriod: 1000 //num of iterations, not miliseconds!
           },
@@ -1613,11 +1613,11 @@ FCTNO,VLTY,TIME,STRIKE,OPRICE
               $('body').append($('<p>output: ' + output.black + 'should be 0.368804632969139 <p>'));
               var output = net.run({ r: 1, g: 0.4, b: 0 });  // { white: 0.99, black: 0.002 }
               $('body').append($('<p>output: ' + output.white + 'should be 0.368804632969139 <p>'));
-              output = net.run({VLTY:0.1,TIME:0.333333333,STRIKE:0.0});
+              output = net.run({"VLTY":"0.1","TIME":"0.333333333","STRIKE":"0.0"});
               $('body').append($('<p>output: ' + output['OPRICE'] + 'should be 0.7779 <p>'))
-              output = net.run({VLTY:0.1,TIME:0.333333333,STRIKE:0.5});
+              output = net.run({"VLTY":"0.1","TIME":"0.333333333","STRIKE":"0.5"});
               $('body').append($('<p>output: ' + output['OPRICE'] + 'should be 0.7468 <p>'))
-              output = net.run({VLTY:0.1,TIME:0.333333333,STRIKE:1});
+              output = net.run({"VLTY":"0.1","TIME":"0.333333333","STRIKE":"1"});
               $('body').append($('<p>output: ' + output['OPRICE'] + 'should be 0.716 <p>'))
             }
           },
