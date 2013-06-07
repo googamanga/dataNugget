@@ -50,12 +50,22 @@
     <script rel="stylesheet" href="assets/lib/js/bootstrap.js"></script>
     <script src="assets/javascripts/jquery-1.4.2.min.js"></script>
     <script src="assets/javascripts/handlebars.js"></script>
-    <script src="handlebarsTest.js"></script>
-    <script type="text/html" src="templates.html"></script>
     <script src="assets/javascripts/backbone.js"></script>
+
+    <!--views-->
+    <script src="assets/views/InsertDataView.js"></script>
+
+    <!--modles-->
+    <script src="assets/models/InsertDataModel.js"></script>
+
   </head>
 
   <body>
+    <script type="text/html" id='insert-raw-csv-template'>
+      <h2>Insert csv data!</h2>
+      <textarea><%= value %></textarea>
+      <p><a href="#" class="btn btn-primary btn-large"> Parse data? &raquo;</a></p>
+    </script>
 
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
@@ -106,10 +116,8 @@
         </div><!--/span-->
         <div class="span10">
           <h1>Welcome to DataNugget!  </h1>
+          <p><strong>Collaberate with others to get more insight out of data!</strong>  </p>
           <div id='insert-raw-csv' class="hero-unit">
-            <h2>Insert csv data!</h2>
-            <p>Collaberate with others to get more insight out of data!</p>
-            <p><a href="#" class="btn btn-primary btn-large"> What's possible? &raquo;</a></p>
           </div>
           <div id='customize-data' class="hero-unit">
             <h2>Insert csv data!  </h2>
@@ -134,6 +142,14 @@
       <footer>
         <p>&copy; Company 2013</p>
       </footer>
+
+      <!-- insertDataView = new InsertDataView({model: new InserDataModel}); -->
+      <script>
+        $(document).ready(function(){
+          debugger
+          var insertDataView = new InsertDataView();
+        });
+      </script>
 
     </div><!--/.fluid-container-->
 
