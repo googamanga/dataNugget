@@ -4,19 +4,22 @@ var InsertDataView = Backbone.View.extend({
 
   show: true,
 
-  // events: {
-  //   "click .icon":          "open",
-  //   "click .button.edit":   "openEditDialog",
-  //   "click .button.delete": "destroy"
-  // },
+  events: {
+    "input #csvInput": "massageCsvButton",
+    "propertychange #csvInput": "massageCsvButton"
+  },
 
   initialize: function() {
     this.render();
   },
 
+  massageCsvButton: function(){
+    this.model.csvToMetaData();
+  },
+
   render: function() {
     this.template = $("#insert-raw-csv-template").html();
-    this.$el.html(_.template(this.template, {value: "csv,data,here"}));
+    this.$el.html(_.template(this.template, {'raw_csv_data': this.model.get('raw_csv_data')}));
     return this;
   }
 });

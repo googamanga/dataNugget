@@ -48,7 +48,7 @@
     <script rel="stylesheet" type='image/png' href="assets/lib/bootstrap/img/glyphicons-halflings-white.png"></script>
     <script rel="stylesheet" type='image/png' href="assets/lib/bootstrap/img/glyphicons-halflings.png"></script>
     <script rel="stylesheet" href="assets/lib/js/bootstrap.js"></script>
-    <script src="assets/javascripts/jquery-1.4.2.min.js"></script>
+    <script src="assets/javascripts/jquery-2.0.2.js"></script>
     <script src="assets/javascripts/handlebars.js"></script>
     <script src="assets/javascripts/backbone.js"></script>
 
@@ -56,15 +56,15 @@
     <script src="assets/views/InsertDataView.js"></script>
 
     <!--modles-->
-    <script src="assets/models/InsertDataModel.js"></script>
+    <script src="assets/models/ClientSideDataModel.js"></script>
 
   </head>
 
   <body>
     <script type="text/html" id='insert-raw-csv-template'>
       <h2>Insert csv data!</h2>
-      <textarea><%= value %></textarea>
-      <p><a href="#" class="btn btn-primary btn-large"> Parse data? &raquo;</a></p>
+      <textarea id='csvInput' class='span12' rows='10'><%= raw_csv_data %></textarea>
+      <button id='massageCsvButton' class="btn btn-large btn-primary" type="button">Massage CSV Data</button>
     </script>
 
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -146,8 +146,7 @@
       <!-- insertDataView = new InsertDataView({model: new InserDataModel}); -->
       <script>
         $(document).ready(function(){
-          debugger
-          var insertDataView = new InsertDataView();
+          var insertDataView = new InsertDataView({model: new ClientSideDataModel});
         });
       </script>
 
