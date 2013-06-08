@@ -1,6 +1,6 @@
-var InsertDataView = Backbone.View.extend({
+var MetaDataView = Backbone.View.extend({
 
-  el: '#insert-raw-csv',
+  el: '#meta-data-work',
 
   show: true,
 
@@ -15,12 +15,11 @@ var InsertDataView = Backbone.View.extend({
   },
 
   massageCsvButton: function(){
-    this.model.set('raw_csv_data', $('#csvInput').val())
     this.model.csvToMetaData();
   },
 
   render: function() {
-    this.template = $("#insert-raw-csv-template").html();
+    this.template = $("#meta-data-work-template").html();
     this.$el.html(_.template(this.template, {'raw_csv_data': this.model.get('raw_csv_data')}));
     return this;
   }

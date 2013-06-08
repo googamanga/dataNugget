@@ -54,6 +54,7 @@
 
     <!--views-->
     <script src="assets/views/InsertDataView.js"></script>
+    <script src="assets/views/MetaDataView.js"></script>
 
     <!--modles-->
     <script src="assets/models/ClientSideDataModel.js"></script>
@@ -64,6 +65,34 @@
     <script type="text/html" id='insert-raw-csv-template'>
       <h2>Insert csv data!</h2>
       <textarea id='csvInput' class='span12' rows='10'><%= raw_csv_data %></textarea>
+      <button id='massageCsvButton' class="btn btn-large btn-primary" type="button">Massage CSV Data</button>
+    </script>
+    <script type="text/html" id='meta-data-work-template'>
+      <h2>Massage the Data!</h2>
+      <table class="table table-bordered table-hover table-condensed ">
+        <caption>Capiton1</caption>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Column1</th>
+            <th>Column2</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>target</strong></td>
+          </tr>
+          <tr>
+            <td><strong>skip</strong></td>
+          </tr>
+          <tr>
+            <td><strong>continuous-column</strong></td>
+          </tr>
+          <tr>
+            <td><strong>discrete-column</strong></td>
+          </tr>
+        </tbody>
+      </table>
       <button id='massageCsvButton' class="btn btn-large btn-primary" type="button">Massage CSV Data</button>
     </script>
 
@@ -119,10 +148,7 @@
           <p><strong>Collaberate with others to get more insight out of data!</strong>  </p>
           <div id='insert-raw-csv' class="hero-unit">
           </div>
-          <div id='customize-data' class="hero-unit">
-            <h2>Insert csv data!  </h2>
-            <p>Collaberate with others to get more insight out of data!</p>
-            <p><a href="#" class="btn btn-primary btn-large"> What's possible? &raquo;</a></p>
+          <div id='meta-data-work' class="hero-unit">
           </div>
           <div id='calculate-data' class="hero-unit">
             <h2>Insert csv data!  </h2>
@@ -146,7 +172,9 @@
       <!-- insertDataView = new InsertDataView({model: new InserDataModel}); -->
       <script>
         $(document).ready(function(){
-          var insertDataView = new InsertDataView({model: new ClientSideDataModel});
+          clientData = new ClientSideDataModel();
+          var insertDataView = new InsertDataView({model: clientData});
+          var metaDataView = new MetaDataView({model: clientData});
         });
       </script>
 

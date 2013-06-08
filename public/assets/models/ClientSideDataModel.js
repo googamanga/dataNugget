@@ -1534,17 +1534,20 @@ var ClientSideDataModel = Backbone.Model.extend({
       "1,1,1,1,0.3534474978917\n"
   },
   csvToMetaData: function(){
-    try{
-      debugger
-      var lines = this.get('raw_csv_data').split("\n"), output = [];
-      for(var i = 0; i < 1; i++)
-          output.push("<tr><td>"
-                      + lines[i].slice(0,-1).split(",").join("</td><td>")
-                      + "</td></tr>");
-      output = "<table>" + output.join("") + "</table>";
-      $('body').append(output);
-    } catch(err){
-      console.log("could not convert csv to table, try again, err:", err);
-    }
+    // try{
+      var firstline = this.get('raw_csv_data').substring(0, this.get('raw_csv_data').indexOf('\n'));
+      var self = this;
+      if(!this.get('metaHash')){
+        this.set('metaHash', {});
+      }
+      _.each(firstline.slice(0).split(","),function(value, index, list){
+        if(!self.get('metaHash')[index]){
+          self.get('metaHash')[index] = {name: undefined};
+        }
+        self.get('metaHash')[index].name = value;
+      });
+    // } catch(err){
+    //   console.log("could not convert csv to table, try again, err:", err.message);
+    // }
   }
 });
