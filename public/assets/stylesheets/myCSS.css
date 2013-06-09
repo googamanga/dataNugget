@@ -6,3 +6,11 @@
 	overflow-x:auto;
 	background-color:white;
 }
+
+.custom {
+  width: 98px !important;
+}
+
+td,th {
+  text-align: center !important;
+}

@@ -71,7 +71,7 @@
       <h2>Massage the Data!</h2>
       <div style='overflow-x:auto'>
         <table class="table table-bordered table-hover table-condensed">
-          <caption>Please go through the selections in the table below, there should not be any "Undef" items</caption>
+          <caption><strong>Please go through the selections in the table below, there should not be any "Undef" items</strong></caption>
           <thead>
             <tr>
               <th></th>
@@ -85,13 +85,13 @@
               <td><strong>target</strong></td>
               <% for(var i = 0; i < metaHash.colNameArray.length; i++) { %>
                 <% if( metaHash.colNameArray[i].skip === true ){%>
-                  <td><button type="button" id="target-<%= i %>" class="btn btn-default">Skip</button></td>
+                  <td><button type="button" id="target-<%= i %>" class="btn btn-default custom">Skip</button></td>
                 <%} else if( metaHash.target === undefined ){%>
-                  <td><button type="button" id="target-<%= i %>" class="btn btn-inverse">Undef</button></td>
+                  <td><button type="button" id="target-<%= i %>" class="btn btn-inverse custom">Undef</button></td>
                 <%} else if( i === +metaHash.target){%>
-                  <td><button type="button" id="target-<%= i %>" class="btn btn-success">Target</button></td>
+                  <td><button type="button" id="target-<%= i %>" class="btn btn-success custom">Target</button></td>
                 <%} else {%> 
-                  <td><button type="button" id="target-<%= i %>" class="btn btn-default">Driver</button></td>
+                  <td><button type="button" id="target-<%= i %>" class="btn btn-default custom">Driver</button></td>
                 <%}%> 
               <% } %>
             </tr>
@@ -99,9 +99,9 @@
               <td><strong>skip</strong></td>
               <% for(var i = 0; i < metaHash.colNameArray.length; i++) { %>
                 <% if( metaHash.colNameArray[i].skip === true ){%>
-                  <td><button type="button" id="skip-<%= i %>" class="btn btn-default">Skip</button></td>
+                  <td><button type="button" id="skip-<%= i %>" class="btn btn-default custom">Skip</button></td>
                 <%} else {%>
-                  <td><button type="button" id="skip-<%= i %>" class="btn btn-success">Keep</button></td>
+                  <td><button type="button" id="skip-<%= i %>" class="btn btn-success custom">Keep</button></td>
                 <%}%>
               <% } %>
             </tr>
@@ -109,20 +109,31 @@
               <td><strong>type</strong></td>
               <% for(var i = 0; i < metaHash.colNameArray.length; i++) { %>
                 <% if( metaHash.colNameArray[i].skip === true ){%>
-                  <td><button type="button" id="type-<%= i %>" class="btn btn-default">Skip</button></td>
+                  <td><button type="button" id="type-<%= i %>" class="btn btn-default custom">Skip</button></td>
                 <%} else if( metaHash.colNameArray[i].type === undefined ){%>
-                  <td><button type="button" id="type-<%= i %>" class="btn btn-inverse">Undef</button></td>
+                  <td><button type="button" id="type-<%= i %>" class="btn btn-inverse custom">Undef</button></td>
                 <%} else if( metaHash.colNameArray[i].type === 'discrete'){%>
-                  <td><button type="button" id="type-<%= i %>" class="btn btn-warning">Discrete</button></td>
+                  <td><button type="button" id="type-<%= i %>" class="btn btn-warning custom">Discrete</button></td>
                 <%} else {%> 
-                  <td><button type="button" id="type-<%= i %>" class="btn btn-primary">Continuous</button></td>
+                  <td><button type="button" id="type-<%= i %>" class="btn btn-primary custom">Continuous</button></td>
                 <%}%> 
               <% } %>
             </tr>
           </tbody>
         </table>
       </div>
-      <button id='massageCsvButton' class="btn btn-primarylarge btn-primary" type="button">Massage CSV Data</button>
+      <button id='massageCsvButton' class="btn btn-large btn-primary" type="button">Normalize CSV Data</button>
+    </script>
+
+    <script type="text/html" id='Normalized-csv'>
+      <h2>Normalized Data!</h2>
+      <ul class="nav nav-pills">
+        <li class="active"><a href="#">Data</a></li>
+        <li><a href="#">1</a></li>
+        <li><a href="#">2</a></li>
+      </ul>
+      <textarea id='csvInput' class='span12' rows='10'><%= raw_csv_data %></textarea>
+      <button id='massageCsvButton' class="btn btn-large btn-primary" type="button">Massage CSV Data</button>
     </script>
 
     <div class="navbar navbar-inverse navbar-fixed-top">

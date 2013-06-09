@@ -2,7 +2,7 @@ var MetaDataView = Backbone.View.extend({
 
   el: '#meta-data-work',
 
-  show: true,
+  show: false,
 
   events: {
     "input #csvInput": "massageCsvButton",
@@ -14,11 +14,14 @@ var MetaDataView = Backbone.View.extend({
   initialize: function() {
     self = this;
     this.model.on('all', function(){
+      self.show = true;
       self.render();
     });
+    self.render();
   },
 
   massageCsvButton: function(){
+    this.show = true;
     this.model.csvToMetaData();
   },
 
@@ -29,12 +32,15 @@ var MetaDataView = Backbone.View.extend({
     if(type !== undefined && index !== undefined){
       this.model.updateMetaData(type, index);
     }
-    // self.render();  //should update automatically
   },
 
   render: function() {
-    this.template = $("#meta-data-work-template").html();
-    this.$el.html(_.template(this.template, {'metaHash': this.model.get('metaHash')}));
+    if(this.show === true){
+      this.template = $("#meta-data-work-template").html();
+      this.$el.html(_.template(this.template, {'metaHash': this.model.get('metaHash')}));
+    } else {
+      this.$el.html('<h3>Massage The Data</h3>');
+    }
     console.log('meta table rendered');
     return this;
   }
