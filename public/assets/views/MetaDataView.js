@@ -34,7 +34,8 @@ var MetaDataView = Backbone.View.extend({
 
   render: function() {
     this.template = $("#meta-data-work-template").html();
-    this.$el.html(_.template(this.template, {'colNameArray': this.model.get('metaHash').colNameArray}));
+    this.$el.html(_.template(this.template, {'metaHash': this.model.get('metaHash')}));
+    console.log('meta table rendered');
     return this;
   }
 });

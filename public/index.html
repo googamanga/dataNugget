@@ -75,33 +75,39 @@
           <thead>
             <tr>
               <th></th>
-              <% for(var i = 0; i < colNameArray.length; i++) { %>
-                <th><%= colNameArray[i].name %></th>
+              <% for(var i = 0; i < metaHash.colNameArray.length; i++) { %>
+                <th><%= metaHash.colNameArray[i].name %></th>
               <% } %>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td><strong>target</strong></td>
-              <% for(var i = 0; i < colNameArray.length; i++) { %>
-                  <td><button type="button" id="target-<%= i %>" class="btn btn-primary">Middle</button></td>  
+              <% for(var i = 0; i < metaHash.colNameArray.length; i++) { %>
+                <% if( metaHash.target === undefined ){%>
+                  <td><button type="button" id="target-<%= i %>" class="btn btn-inverse">Undef</button></td> 
+                <%} else if( i === +metaHash.target){%>
+                  <td><button type="button" id="target-<%= i %>" class="btn btn-success">Target</button></td> 
+                <%} else {%> 
+                  <td><button type="button" id="target-<%= i %>" class="btn btn-default">Driver</button></td> 
+                <%}%> 
               <% } %>
             </tr>
             <tr>
               <td><strong>skip</strong></td>
-              <% for(var i = 0; i < colNameArray.length; i++) { %>
+              <% for(var i = 0; i < metaHash.colNameArray.length; i++) { %>
                   <td><button type="button" id="skip-<%= i %>" class="btn btn-primary">Middle</button></td>  
               <% } %>
             </tr>
             <tr>
               <td><strong>discrete-column</strong></td>
-              <% for(var i = 0; i < colNameArray.length; i++) { %>
+              <% for(var i = 0; i < metaHash.colNameArray.length; i++) { %>
                   <td><button type="button" id="discrete-<%= i %>" class="btn btn-primary">Middle</button></td>  
               <% } %>
             </tr>
             <tr>
               <td><strong>continuous-column</strong></td>
-              <% for(var i = 0; i < colNameArray.length; i++) { %>
+              <% for(var i = 0; i < metaHash.colNameArray.length; i++) { %>
                   <td><button type="button" id="continuous-<%= i %>" class="btn btn-primary">Middle</button></td>  
               <% } %>
             </tr>

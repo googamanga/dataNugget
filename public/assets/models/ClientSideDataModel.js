@@ -1544,30 +1544,40 @@ var ClientSideDataModel = Backbone.Model.extend({
       var firstline = this.get('raw_csv_data').substring(0, this.get('raw_csv_data').indexOf('\n'));
       var self = this;
       var list = firstline.slice(0).split(",");
+      var array = self.get('metaHash').colNameArray;
       _.each(list,function(value, index){
-        if(!self.get('metaHash').colNameArray[index]){
-          self.get('metaHash').colNameArray[index] = {};
-          self.get('metaHash').colNameArray[index].skip = false;
-          self.get('metaHash').colNameArray[index].type = undefined;
+        if(!array[index]){
+          array[index] = {};
+          array[index].skip = false;
+          array[index].type = undefined;
         }
-        self.get('metaHash').colNameArray[index].name = value;
+        array[index].name = value;
       });
-      self.get('metaHash').colNameArray.splice(list.length);
+      if(array.length > list.length){
+        array.splice(list.length);
+        if(self.get('metaHash').target >= list.length){
+          self.get('metaHash').target = undefined;
+        }
+      }
     } catch(err){
       console.log("could not convert csv to table, try again, err:", err.message);
     }
-    this.trigger('all');  
+    this.trigger('all');
   },
   updateMetaData: function(type,index){
     var mH = this.get('metaHash').colNameArray[index];
     if(type === 'skip'){
       mH.skip = !mH.skip[type];
+      console.log(mH);
     } else if(type === 'target'){
-      mH.target = index;
+      this.get('metaHash').target = index;
+      console.log(mH);
     } else if(type === 'continuous' || type === 'discrete') {
       mH.type = type;
+      console.log(mH);
     } else {
       alert('unidentified type passed to updateMetaData: ', type);
     }
+    this.trigger('all');
   }
 });
