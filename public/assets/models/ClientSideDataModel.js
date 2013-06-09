@@ -1,6 +1,7 @@
 var ClientSideDataModel = Backbone.Model.extend({
   //raw_csv_data
   defaults: {
+    'metaHash': {target: undefined, colNameArray: []},
     'raw_csv_data': "FCTNO,VLTY,TIME,STRIKE,OPRICE\n"+
       "0.00065359477124183,0.1,0.333333333333333,0.6,0.777970368664598\n"+
       "0.00130718954248366,0.1,0.333333333333333,0.608,0.746851553918014\n"+
@@ -1533,21 +1534,40 @@ var ClientSideDataModel = Backbone.Model.extend({
       "0.999346405228758,1,1,0.992,0.361043600571341\n"+
       "1,1,1,1,0.3534474978917\n"
   },
+  initialize: function(){
+    this.csvToMetaData();
+    console.log(this.get('metaHash'));
+  },
+
   csvToMetaData: function(){
-    // try{
+    try{
       var firstline = this.get('raw_csv_data').substring(0, this.get('raw_csv_data').indexOf('\n'));
       var self = this;
-      if(!this.get('metaHash')){
-        this.set('metaHash', {});
-      }
-      _.each(firstline.slice(0).split(","),function(value, index, list){
-        if(!self.get('metaHash')[index]){
-          self.get('metaHash')[index] = {name: undefined};
+      var list = firstline.slice(0).split(",");
+      _.each(list,function(value, index){
+        if(!self.get('metaHash').colNameArray[index]){
+          self.get('metaHash').colNameArray[index] = {};
+          self.get('metaHash').colNameArray[index].skip = false;
+          self.get('metaHash').colNameArray[index].type = undefined;
         }
-        self.get('metaHash')[index].name = value;
+        self.get('metaHash').colNameArray[index].name = value;
       });
-    // } catch(err){
-    //   console.log("could not convert csv to table, try again, err:", err.message);
-    // }
+      self.get('metaHash').colNameArray.splice(list.length);
+    } catch(err){
+      console.log("could not convert csv to table, try again, err:", err.message);
+    }
+    this.trigger('all');  
+  },
+  updateMetaData: function(type,index){
+    var mH = this.get('metaHash').colNameArray[index];
+    if(type === 'skip'){
+      mH.skip = !mH.skip[type];
+    } else if(type === 'target'){
+      mH.target = index;
+    } else if(type === 'continuous' || type === 'discrete') {
+      mH.type = type;
+    } else {
+      alert('unidentified type passed to updateMetaData: ', type);
+    }
   }
 });

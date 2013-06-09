@@ -3,5 +3,6 @@
 }
 
 .table{
+	overflow-x:auto;
 	background-color:white;
 }

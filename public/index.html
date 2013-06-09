@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Bootstrap, from Twitter</title>
+    <title>Data Nugget</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -69,30 +69,45 @@
     </script>
     <script type="text/html" id='meta-data-work-template'>
       <h2>Massage the Data!</h2>
-      <table class="table table-bordered table-hover table-condensed ">
-        <caption>Capiton1</caption>
-        <thead>
-          <tr>
-            <th></th>
-            <th>Column1</th>
-            <th>Column2</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>target</strong></td>
-          </tr>
-          <tr>
-            <td><strong>skip</strong></td>
-          </tr>
-          <tr>
-            <td><strong>continuous-column</strong></td>
-          </tr>
-          <tr>
-            <td><strong>discrete-column</strong></td>
-          </tr>
-        </tbody>
-      </table>
+      <div style='overflow-x:auto'>
+        <table class="table table-bordered table-hover table-condensed ">
+          <caption>Please go through the selections in the table below</caption>
+          <thead>
+            <tr>
+              <th></th>
+              <% for(var i = 0; i < colNameArray.length; i++) { %>
+                <th><%= colNameArray[i].name %></th>
+              <% } %>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>target</strong></td>
+              <% for(var i = 0; i < colNameArray.length; i++) { %>
+                  <td><button type="button" id="target-<%= i %>" class="btn btn-primary">Middle</button></td>  
+              <% } %>
+            </tr>
+            <tr>
+              <td><strong>skip</strong></td>
+              <% for(var i = 0; i < colNameArray.length; i++) { %>
+                  <td><button type="button" id="skip-<%= i %>" class="btn btn-primary">Middle</button></td>  
+              <% } %>
+            </tr>
+            <tr>
+              <td><strong>discrete-column</strong></td>
+              <% for(var i = 0; i < colNameArray.length; i++) { %>
+                  <td><button type="button" id="discrete-<%= i %>" class="btn btn-primary">Middle</button></td>  
+              <% } %>
+            </tr>
+            <tr>
+              <td><strong>continuous-column</strong></td>
+              <% for(var i = 0; i < colNameArray.length; i++) { %>
+                  <td><button type="button" id="continuous-<%= i %>" class="btn btn-primary">Middle</button></td>  
+              <% } %>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <button id='massageCsvButton' class="btn btn-large btn-primary" type="button">Massage CSV Data</button>
     </script>
 
