@@ -71,7 +71,7 @@
       <h2>Massage the Data!</h2>
       <div style='overflow-x:auto'>
         <table class="table table-bordered table-hover table-condensed">
-          <caption>Please go through the selections in the table below</caption>
+          <caption>Please go through the selections in the table below, there should not be any "Undef" items</caption>
           <thead>
             <tr>
               <th></th>
@@ -106,30 +106,16 @@
               <% } %>
             </tr>
             <tr>
-              <td><strong>discrete</strong></td>
+              <td><strong>type</strong></td>
               <% for(var i = 0; i < metaHash.colNameArray.length; i++) { %>
                 <% if( metaHash.colNameArray[i].skip === true ){%>
-                  <td><button type="button" id="discrete-<%= i %>" class="btn btn-default">Skip</button></td>
+                  <td><button type="button" id="type-<%= i %>" class="btn btn-default">Skip</button></td>
                 <%} else if( metaHash.colNameArray[i].type === undefined ){%>
-                  <td><button type="button" id="discrete-<%= i %>" class="btn btn-inverse">Undef</button></td>
+                  <td><button type="button" id="type-<%= i %>" class="btn btn-inverse">Undef</button></td>
                 <%} else if( metaHash.colNameArray[i].type === 'discrete'){%>
-                  <td><button type="button" id="discrete-<%= i %>" class="btn btn-success">Discrete</button></td>
+                  <td><button type="button" id="type-<%= i %>" class="btn btn-warning">Discrete</button></td>
                 <%} else {%> 
-                  <td><button type="button" id="discrete-<%= i %>" class="btn btn-default">Continuous</button></td>
-                <%}%> 
-              <% } %>
-            </tr>
-            <tr>
-              <td><strong>continuous</strong></td>
-              <% for(var i = 0; i < metaHash.colNameArray.length; i++) { %>
-                <% if( metaHash.colNameArray[i].skip === true ){%>
-                  <td><button type="button" id="continuous-<%= i %>" class="btn btn-default">Skip</button></td>
-                <%} else if( metaHash.colNameArray[i].type === undefined ){%>
-                  <td><button type="button" id="continuous-<%= i %>" class="btn btn-inverse">Undef</button></td>
-                <%} else if( metaHash.colNameArray[i].type === 'continuous'){%>
-                  <td><button type="button" id="continuous-<%= i %>" class="btn btn-success">Continuous</button></td>
-                <%} else {%>
-                  <td><button type="button" id="continuous-<%= i %>" class="btn btn-default">Discrete</button></td>
+                  <td><button type="button" id="type-<%= i %>" class="btn btn-primary">Continuous</button></td>
                 <%}%> 
               <% } %>
             </tr>
