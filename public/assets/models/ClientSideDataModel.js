@@ -1553,6 +1553,7 @@ var ClientSideDataModel = Backbone.Model.extend({
         }
         array[index].name = value;
       });
+
       if(array.length > list.length){
         array.splice(list.length);
         if(self.get('metaHash').target >= list.length){
@@ -1567,17 +1568,21 @@ var ClientSideDataModel = Backbone.Model.extend({
   updateMetaData: function(type,index){
     var mH = this.get('metaHash').colNameArray[index];
     if(type === 'skip'){
-      mH.skip = !mH.skip[type];
-      console.log(mH);
+      mH.skip = !mH.skip;
+      console.log('from skip: ', mH);
     } else if(type === 'target'){
       this.get('metaHash').target = index;
-      console.log(mH);
+      console.log('from target: ',mH);
     } else if(type === 'continuous' || type === 'discrete') {
       mH.type = type;
+      mH.skip = false;
       console.log(mH);
     } else {
       alert('unidentified type passed to updateMetaData: ', type);
     }
+    if(+index === +this.get('metaHash').target){
+        mH.skip = false;
+      }
     this.trigger('all');
   }
 });
