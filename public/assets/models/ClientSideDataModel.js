@@ -1540,7 +1540,6 @@ var ClientSideDataModel = Backbone.Model.extend({
   },
   initialize: function(){
     this.csvToMetaData();
-    console.log(this.get('metaHash'));
   },
 
   csvToMetaData: function(){
@@ -1593,7 +1592,7 @@ var ClientSideDataModel = Backbone.Model.extend({
     var unNormalizedObjects = this.csvToObject(this.get('raw_csv_data'), this.get('metaHash'));
     //works on unNormalizedObjects in place, (last line is "return unNormalizedObjects;")
     this.set('normalizedObject', this.normalizeObject(unNormalizedObjects, this.get('metaHash')));
-    this.set('normalizedCsvData',JSON.stringify(this.get('normalizedObject')));
+    this.set('normalizedCsvData',JSON.stringify(this.get('normalizedObject')).replace(/,{"input":{/g,','+'\n'+'{"input":{'));
     this.trigger('all:normalizedCsvData');
   },
   normalizeObject: function(unNormalizedObjects, metaHash){
@@ -1603,6 +1602,8 @@ var ClientSideDataModel = Backbone.Model.extend({
     for( i = 0; i < metaArray.length; i++){
       if(!metaArray[i].skip){
         nameIndexHash[metaArray[i].name] = i;
+        metaArray[i].unNormalized = [];
+        metaArray[i].normalized = [];
       }
     }
     for( i = 0; i < unNormalizedObjects.length; i++){
@@ -1610,11 +1611,15 @@ var ClientSideDataModel = Backbone.Model.extend({
       var keys = Object.keys(inputHash);
       for(var j = 0; j < keys.length; j++){
         var name = keys[j];
+        metaArray[nameIndexHash[name]].unNormalized.push(inputHash[name]);
         inputHash[name] = metaArray[nameIndexHash[name]].realToNormalized(inputHash[name]);
+        metaArray[nameIndexHash[name]].normalized.push(inputHash[name]);
       }
       var targetObj = metaArray[metaHash.target]
       var outputKey = targetObj.name;
+      targetObj.unNormalized.push(unNormalizedObjects[i].output[outputKey]);
       unNormalizedObjects[i].output[outputKey] = targetObj.realToNormalized(unNormalizedObjects[i].output[outputKey]);
+      targetObj.normalized.push(unNormalizedObjects[i].output[outputKey]);
     }
     return unNormalizedObjects;
   },

@@ -22,6 +22,7 @@ var InsertDataView = Backbone.View.extend({
   render: function() {
     this.template = $("#insert-raw-csv-template").html();
     this.$el.html(_.template(this.template, {'raw_csv_data': this.model.get('raw_csv_data')}));
+    console.log('insert-csv rendered');
     return this;
   }
 });

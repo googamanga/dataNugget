@@ -128,11 +128,11 @@
 
     <script type="text/html" id='normalized-csv-template'>
       <h2>Normalized Data!</h2>
-      <ul class="nav nav-pills">
+      <ul id='normalized_data_nav' class="nav nav-pills">
         <% if( data.active === 'data' ){%>
-          <li><button type="button" id="tab-<%= i %>" class="btn btn-primary">Normalized Data</button></li>
+          <li><button type="button" id="tab-data" class="btn btn-primary">Normalized Data</button></li>
         <%} else {%> 
-          <li><button type="button" id="tab-<%= i %>" class="btn btn-default">Normalized Data</button></li>
+          <li><button type="button" id="tab-data" class="btn btn-default">Normalized Data</button></li>
         <%}%> 
 
         <% for(var i = 0; i < data.metaHash.colNameArray.length; i++) { %>
@@ -149,14 +149,25 @@
         <textarea class='span12' rows='10'><%= data.normalizedCsvData %></textarea>
       <%} else if( !isNaN(data.active) ){%>
         <textarea class='span12' rows='10'>
-          Name:               <%= data.metaHash.colNameArray[+data.active].name %>,
-          Max:                <%= data.metaHash.colNameArray[+data.active].max %>,
-          Min:                <%= data.metaHash.colNameArray[+data.active].min %>,
-          realToNormalized:   <%= data.metaHash.colNameArray[+data.active].realToNormalized %>,
-          normalizedToReal:   <%= data.metaHash.colNameArray[+data.active].normalizedToReal %>,
+          <% if(+data.active === +data.metaHash.target) {
+          %>Target<%
+          } else {
+          %>Driver<%}%>
+          Name:					<%= data.metaHash.colNameArray[+data.active].name %>
+          Type:					<%= data.metaHash.colNameArray[+data.active].type %>
+          Max:					<%= data.metaHash.colNameArray[+data.active].max %>
+          Min:					<%= data.metaHash.colNameArray[+data.active].min %>
+
+          POSITION,INPUT,NORMALIZED
+          <% if(data.metaHash.colNameArray[+data.active].type === 'continuous'){
+            for( var i = 0; i < data.metaHash.colNameArray[+data.active].unNormalized.length; i++){
+          %><% print(i + ',' +  data.metaHash.colNameArray[+data.active].unNormalized[i] + ',' + data.metaHash.colNameArray[+data.active].normalized[i]) %>
+          <% }  } else {%>
+            NO HANDLER FOR DISCRETE YET!
+          <% } %>
         </textarea>
       <%}%>
-      <button id='massageCsvButton' class="btn btn-large btn-primary" type="button">Massage CSV Data</button>
+      <button id='trainOnData' class="btn btn-large btn-primary" type="button">Start training on the data</button>
     </script>
 
     <div class="navbar navbar-inverse navbar-fixed-top">
