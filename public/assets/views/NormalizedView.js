@@ -37,12 +37,12 @@ var NormalizedView = Backbone.View.extend({
   render: function() {
     if(this.show === true){
       this.template = $("#normalized-csv-template").html();
-      debugger
       this.$el.html(_.template(this.template, {
         data: {
           normalizedCsvData: this.model.get('normalizedCsvData'),
           active: this.active,
-          metaHash: this.model.get('metaHash')
+          metaHash: this.model.get('metaHash'),
+          specializedData: this.model.get('specializedData')
         }
       }));
     } else {

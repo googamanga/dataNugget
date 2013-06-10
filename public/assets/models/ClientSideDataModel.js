@@ -2,6 +2,7 @@ var ClientSideDataModel = Backbone.Model.extend({
   //raw_csv_data
   defaults: {
     'normalizedObject': {},
+    'specializedData': [],
     'normalizedCsvData': "",
     'metaHash': {target: undefined, colNameArray: []},
     'raw_csv_data': "FCTNO,VLTY,TIME,STRIKE,OPRICE\n"+
@@ -1591,19 +1592,21 @@ var ClientSideDataModel = Backbone.Model.extend({
   normalizeData: function(){
     var unNormalizedObjects = this.csvToObject(this.get('raw_csv_data'), this.get('metaHash'));
     //works on unNormalizedObjects in place, (last line is "return unNormalizedObjects;")
-    this.set('normalizedObject', this.normalizeObject(unNormalizedObjects, this.get('metaHash')));
+    this.set('normalizedObject', this.normalizeObject(unNormalizedObjects, this.get('metaHash'), this.get('specializedData')));
     this.set('normalizedCsvData',JSON.stringify(this.get('normalizedObject')).replace(/,{"input":{/g,','+'\n'+'{"input":{'));
     this.trigger('all:normalizedCsvData');
   },
-  normalizeObject: function(unNormalizedObjects, metaHash){
+  normalizeObject: function(unNormalizedObjects, metaHash, specializedData){
     var i = null;
     var metaArray = metaHash.colNameArray;
     var nameIndexHash = {};
     for( i = 0; i < metaArray.length; i++){
       if(!metaArray[i].skip){
         nameIndexHash[metaArray[i].name] = i;
-        metaArray[i].unNormalized = [];
-        metaArray[i].normalized = [];
+        specializedData[i] = {};
+        specializedData[i].name = metaArray[i].name;
+        specializedData[i].unNormalized = [];
+        specializedData[i].normalized = [];
       }
     }
     for( i = 0; i < unNormalizedObjects.length; i++){
@@ -1611,15 +1614,15 @@ var ClientSideDataModel = Backbone.Model.extend({
       var keys = Object.keys(inputHash);
       for(var j = 0; j < keys.length; j++){
         var name = keys[j];
-        metaArray[nameIndexHash[name]].unNormalized.push(inputHash[name]);
+        specializedData[nameIndexHash[name]].unNormalized.push(inputHash[name]);
         inputHash[name] = metaArray[nameIndexHash[name]].realToNormalized(inputHash[name]);
-        metaArray[nameIndexHash[name]].normalized.push(inputHash[name]);
+        specializedData[nameIndexHash[name]].normalized.push(inputHash[name]);
       }
       var targetObj = metaArray[metaHash.target]
       var outputKey = targetObj.name;
-      targetObj.unNormalized.push(unNormalizedObjects[i].output[outputKey]);
+      specializedData[metaHash.target].unNormalized.push(unNormalizedObjects[i].output[outputKey]);
       unNormalizedObjects[i].output[outputKey] = targetObj.realToNormalized(unNormalizedObjects[i].output[outputKey]);
-      targetObj.normalized.push(unNormalizedObjects[i].output[outputKey]);
+      specializedData[metaHash.target].normalized.push(unNormalizedObjects[i].output[outputKey]);
     }
     return unNormalizedObjects;
   },

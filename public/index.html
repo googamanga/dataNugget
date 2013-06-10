@@ -160,9 +160,9 @@
 
           POSITION,INPUT,NORMALIZED
           <% if(data.metaHash.colNameArray[+data.active].type === 'continuous'){
-            for( var i = 0; i < data.metaHash.colNameArray[+data.active].unNormalized.length; i++){
-          %><% print(i + ',' +  data.metaHash.colNameArray[+data.active].unNormalized[i] + ',' + data.metaHash.colNameArray[+data.active].normalized[i]) %>
-          <% }  } else {%>
+            for( var i = 0; i < data.specializedData[+data.active].unNormalized.length; i++){
+          %><% print(i + ',' +  data.specializedData[+data.active].unNormalized[i] + ',' + data.specializedData[+data.active].normalized[i]) %>
+          <% }  } else {%>	
             NO HANDLER FOR DISCRETE YET!
           <% } %>
         </textarea>
