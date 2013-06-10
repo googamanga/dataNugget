@@ -55,6 +55,7 @@
     <!--views-->
     <script src="assets/views/InsertDataView.js"></script>
     <script src="assets/views/MetaDataView.js"></script>
+    <script src="assets/views/NormalizedView.js"></script>
 
     <!--modles-->
     <script src="assets/models/ClientSideDataModel.js"></script>
@@ -122,17 +123,17 @@
           </tbody>
         </table>
       </div>
-      <button id='massageCsvButton' class="btn btn-large btn-primary" type="button">Normalize CSV Data</button>
+      <button id='normalizeRawData' class="btn btn-large btn-primary" type="button">Normalize CSV Data</button>
     </script>
 
-    <script type="text/html" id='Normalized-csv'>
+    <script type="text/html" id='normalized-csv-template'>
       <h2>Normalized Data!</h2>
       <ul class="nav nav-pills">
         <li class="active"><a href="#">Data</a></li>
         <li><a href="#">1</a></li>
         <li><a href="#">2</a></li>
       </ul>
-      <textarea id='csvInput' class='span12' rows='10'><%= raw_csv_data %></textarea>
+      <textarea id='csvInput' class='span12' rows='10'><%= normalize_csv %></textarea>
       <button id='massageCsvButton' class="btn btn-large btn-primary" type="button">Massage CSV Data</button>
     </script>
 
@@ -185,21 +186,10 @@
         </div><!--/span-->
         <div class="span10">
           <h1>Welcome to DataNugget!  </h1>
-          <p><strong>Collaberate with others to get more insight out of data!</strong>  </p>
-          <div id='insert-raw-csv' class="hero-unit">
-          </div>
-          <div id='meta-data-work' class="hero-unit">
-          </div>
-          <div id='calculate-data' class="hero-unit">
-            <h2>Insert csv data!  </h2>
-            <p>Collaberate with others to get more insight out of data!</p>
-            <p><a href="#" class="btn btn-primary btn-large"> What's possible? &raquo;</a></p>
-          </div>
-          <div id='sample-and-query' class="hero-unit">
-            <h2>Insert csv data!  </h2>
-            <p>Collaberate with others to get more insight out of data!</p>
-            <p><a href="#" class="btn btn-primary btn-large"> What's possible? &raquo;</a></p>
-          </div>
+          <p><strong>Collaberate with others to get more insight out of data!</strong></p>
+          <div id='insert-raw-csv' class="hero-unit"></div>
+          <div id='meta-data-work' class="hero-unit"></div>
+          <div id='normalized-data' class="hero-unit"></div>
         </div><!--/span-->
       </div><!--/row-->
 
@@ -215,6 +205,7 @@
           clientData = new ClientSideDataModel();
           var insertDataView = new InsertDataView({model: clientData});
           var metaDataView = new MetaDataView({model: clientData});
+          var normalizedData = new NormalizedView({model: clientData});
         });
       </script>
 

@@ -5,24 +5,22 @@ var MetaDataView = Backbone.View.extend({
   show: false,
 
   events: {
-    "input #csvInput": "massageCsvButton",
-    "propertychange #csvInput": "massageCsvButton",
-    "click #massageCsvButton": "massageCsvButton",
-    "click tbody": "parseTableClick"
+    "click tbody": "parseTableClick",
+    "click #normalizeRawData": "normalizeRawData",
   },
 
   initialize: function() {
-    self = this;
-    this.model.on('all', function(){
-      self.show = true;
-      self.render();
-    });
-    self.render();
+    this.model.on('all:metaHash', function(){
+      this.show = true;
+      this.render();
+    },this);
+    this.render();
   },
 
-  massageCsvButton: function(){
-    this.show = true;
-    this.model.csvToMetaData();
+  normalizeRawData: function(){
+    console.log('normalizing data');
+    this.model.normalizeData();
+    console.log('done normalizing data')
   },
 
   parseTableClick: function(event){
