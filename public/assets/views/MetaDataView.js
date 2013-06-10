@@ -10,7 +10,8 @@ var MetaDataView = Backbone.View.extend({
   },
 
   initialize: function() {
-    this.model.on('all:metaHash', function(){
+    this.model.on('all:metaHash', function(event){
+      // event.preventDefault();
       this.show = true;
       this.render();
     },this);

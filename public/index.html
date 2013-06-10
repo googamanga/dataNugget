@@ -129,11 +129,33 @@
     <script type="text/html" id='normalized-csv-template'>
       <h2>Normalized Data!</h2>
       <ul class="nav nav-pills">
-        <li class="active"><a href="#">Data</a></li>
-        <li><a href="#">1</a></li>
-        <li><a href="#">2</a></li>
+        <% if( data.active === 'data' ){%>
+          <li><button type="button" id="tab-<%= i %>" class="btn btn-primary">Normalized Data</button></li>
+        <%} else {%> 
+          <li><button type="button" id="tab-<%= i %>" class="btn btn-default">Normalized Data</button></li>
+        <%}%> 
+
+        <% for(var i = 0; i < data.metaHash.colNameArray.length; i++) { %>
+          <% if(data.metaHash.colNameArray[i].skip){ continue; }%>
+          <% if( !isNaN(data.active) && +data.active === i ){%>
+            <li><button type="button" id="tab-<%= i %>" class="btn btn-primary"><%= data.metaHash.colNameArray[i].name %></button></li>
+          <%} else {%> 
+            <li><button type="button" id="tab-<%= i %>" class="btn btn-default"><%= data.metaHash.colNameArray[i].name %></button></li>
+          <%}%> 
+        <% } %>
+
       </ul>
-      <textarea id='csvInput' class='span12' rows='10'><%= normalize_csv %></textarea>
+      <%if( data.active === 'data' ){%>
+        <textarea class='span12' rows='10'><%= data.normalizedCsvData %></textarea>
+      <%} else if( !isNaN(data.active) ){%>
+        <textarea class='span12' rows='10'>
+          Name:               <%= data.metaHash.colNameArray[+data.active].name %>,
+          Max:                <%= data.metaHash.colNameArray[+data.active].max %>,
+          Min:                <%= data.metaHash.colNameArray[+data.active].min %>,
+          realToNormalized:   <%= data.metaHash.colNameArray[+data.active].realToNormalized %>,
+          normalizedToReal:   <%= data.metaHash.colNameArray[+data.active].normalizedToReal %>,
+        </textarea>
+      <%}%>
       <button id='massageCsvButton' class="btn btn-large btn-primary" type="button">Massage CSV Data</button>
     </script>
 

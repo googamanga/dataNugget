@@ -1,9 +1,9 @@
 var ClientSideDataModel = Backbone.Model.extend({
   //raw_csv_data
   defaults: {
-    'NormalizedObject': {},
+    'normalizedObject': {},
+    'normalizedCsvData': "",
     'metaHash': {target: undefined, colNameArray: []},
-    'normalized_csv': {},
     'raw_csv_data': "FCTNO,VLTY,TIME,STRIKE,OPRICE\n"+
       "1,0.2,5,75,25\n"+
       "2,0.2,5,76,24\n"+
@@ -1592,19 +1592,19 @@ var ClientSideDataModel = Backbone.Model.extend({
   normalizeData: function(){
     var unNormalizedObjects = this.csvToObject(this.get('raw_csv_data'), this.get('metaHash'));
     //works on unNormalizedObjects in place, (last line is "return unNormalizedObjects;")
-    this.set('NormalizedObject', this.normalizeObject(unNormalizedObjects, this.get('metaHash')));
+    this.set('normalizedObject', this.normalizeObject(unNormalizedObjects, this.get('metaHash')));
+    this.set('normalizedCsvData',JSON.stringify(this.get('normalizedObject')));
+    this.trigger('all:normalizedCsvData');
   },
   normalizeObject: function(unNormalizedObjects, metaHash){
     var i = null;
     var metaArray = metaHash.colNameArray;
     var nameIndexHash = {};
-    debugger
     for( i = 0; i < metaArray.length; i++){
       if(!metaArray[i].skip){
         nameIndexHash[metaArray[i].name] = i;
       }
     }
-    debugger
     for( i = 0; i < unNormalizedObjects.length; i++){
       var inputHash = unNormalizedObjects[i].input;
       var keys = Object.keys(inputHash);
@@ -1616,7 +1616,6 @@ var ClientSideDataModel = Backbone.Model.extend({
       var outputKey = targetObj.name;
       unNormalizedObjects[i].output[outputKey] = targetObj.realToNormalized(unNormalizedObjects[i].output[outputKey]);
     }
-    debugger
     return unNormalizedObjects;
   },
   parseCSVLine: function(line){
@@ -1734,7 +1733,6 @@ var ClientSideDataModel = Backbone.Model.extend({
         }
 
         //find indexes of columns to skip and update metaHash
-        debugger
         for(i = 0; i < metaArray.length; i++){
           if(metaArray[i].skip){
             indexesOfColumnToSkip.push(i);
@@ -1796,7 +1794,6 @@ var ClientSideDataModel = Backbone.Model.extend({
             } else { throw new Error('unknown type from metaArray[i].type: ' + metaArray[i].type) }
           };
         }
-        debugger
         // return JSON.stringify(objArr, null, "\t");
         console.log('cvs to OBJECT complete!');
         return objArr;
