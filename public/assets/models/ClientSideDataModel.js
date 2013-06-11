@@ -1,10 +1,24 @@
 var ClientSideDataModel = Backbone.Model.extend({
   //raw_csv_data
   defaults: {
-    'normalizedObject': {},
+    'normalizedObject': [],
     'specializedData': [],
     'normalizedCsvData': "",
-    'metaHash': {target: undefined, colNameArray: []},
+    'trainerMessage': null,
+    'trainerError': null,
+    'metaHash': {
+      target: undefined,
+      sampleRate: 0.1,
+      count: null,
+      colNameArray: [],
+      trainer: {
+        parameters: {
+          iterations: 10000,
+          errorThresh: 0.00001,
+          callbackPeriod: 1000
+        }
+      }
+    },
     'raw_csv_data': "FCTNO,VLTY,TIME,STRIKE,OPRICE\n"+
       "1,0.2,5,75,25\n"+
       "2,0.2,5,76,24\n"+
@@ -1539,6 +1553,8 @@ var ClientSideDataModel = Backbone.Model.extend({
       "1529,2,15,124,11.6021\n"+
       "1530,2,15,125,11.358\n"
   },
+
+
   initialize: function(){
     this.csvToMetaData();
   },
@@ -1625,6 +1641,30 @@ var ClientSideDataModel = Backbone.Model.extend({
       specializedData[metaHash.target].normalized.push(unNormalizedObjects[i].output[outputKey]);
     }
     return unNormalizedObjects;
+  },
+  trainOnData: function() {
+    if(window.Worker) {
+      console.log('start with worker');
+      var worker = new Worker("assets/javascripts/training-worker.js");
+      var self = this;
+      worker.onmessage = function(event){
+        self.set('trainerMessage', event);
+        self.trigger('all:trainerMessage');
+        console.log('onMessage!', event);
+      }
+      worker.onerror = function(event){
+        self.set('trainerError', event);
+        self.trigger('all:trainerError');
+        console.log('onError!', event);
+        }
+      worker.postMessage(JSON.stringify([this.get('metaHash').trainer.parameters,this.get('normalizedObject')]));
+      console.log('done with worker');
+    } else {
+      console.log('start with OUT worker');
+      var net = new brain.NeuralNetwork();
+      net.train(inputData, this.parameters);
+      console.log("ran with OUT workeer")
+    }
   },
   parseCSVLine: function(line){
     //from:http://www.cparker15.com/code/utilities/csv-to-json/
@@ -1740,6 +1780,8 @@ var ClientSideDataModel = Backbone.Model.extend({
           csvRows[i] = this.parseCSVLine(csvRows[i]);
         }
 
+        this.get('metaHash').count = csvRows.length - 1;
+
         //find indexes of columns to skip and update metaHash
         for(i = 0; i < metaArray.length; i++){
           if(metaArray[i].skip){
@@ -1810,7 +1852,48 @@ var ClientSideDataModel = Backbone.Model.extend({
   }
 });
 
+var trainer = {
 
+  trainNetwork : function(parameters, inputData) {
+    if(window.Worker) {
+      console.log('start with worker');
+      var worker = new Worker("assets/javascripts/training-worker.js");
+      worker.onmessage = this.onMessage;
+      worker.onerror = this.onError;
+      worker.postMessage(JSON.stringify([parameters,inputData]));
+      console.log('done with worker');
+    } else {
+      console.log('start with OUT worker');
+      var net = new brain.NeuralNetwork();
+      net.train(inputData, this.parameters);
+      console.log("ran with OUT workeer")
+    }
+  },
+
+  onMessage : function(event) {
+    var workerData = JSON.parse(event.data);
+    if(workerData.type == 'progress') { // create variable progress
+      //triger event for view
+      app.trainer.showProgress(workerData); // in view
+    }
+    else if(workerData.type == 'result') {  //create variable result
+      var net = new brain.NeuralNetwork().fromJSON(workerData.net);
+      console.log('training done!');
+      output = net.run({"VLTY":"1","TIME":"0.666666666667","STRIKE":".992"});
+      $('.container').append($('<p>output: ' + Math.round(output['OPRICE']*100)/100 + ' should be 0.25<p>'))
+    }
+  },
+
+  onError : function(event) {//create variable error
+    $("#training-message").text("error training network: " + event.message);
+  },
+
+  showProgress : function(progress) {
+    var completed = progress.iterations / this.parameters.iterations * 100;
+    console.log('complete %:', Math.round(completed, 1), 'error:', progress.error);
+    $(".bar").css("width", completed + "%");
+  }
+}
 
 
 

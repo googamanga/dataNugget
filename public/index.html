@@ -51,11 +51,13 @@
     <script src="assets/javascripts/jquery-2.0.2.js"></script>
     <script src="assets/javascripts/handlebars.js"></script>
     <script src="assets/javascripts/backbone.js"></script>
+    <script src="assets/javascripts/brain.js"></script>
 
     <!--views-->
     <script src="assets/views/InsertDataView.js"></script>
     <script src="assets/views/MetaDataView.js"></script>
     <script src="assets/views/NormalizedView.js"></script>
+    <script src="assets/views/TrainingView.js"></script>
 
     <!--modles-->
     <script src="assets/models/ClientSideDataModel.js"></script>
@@ -170,6 +172,12 @@
       <button id='trainOnData' class="btn btn-large btn-primary" type="button">Start training on the data</button>
     </script>
 
+    <script type="text/html" id='training-template'>
+      <%for(var i = 0; i < samples.length; i++){%>
+        <p><%= samples[i].OPRICE%><p>
+      <%}%>
+    </script>
+
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
@@ -223,6 +231,13 @@
           <div id='insert-raw-csv' class="hero-unit"></div>
           <div id='meta-data-work' class="hero-unit"></div>
           <div id='normalized-data' class="hero-unit"></div>
+          <div id='training-view' class="hero-unit">
+            <h2>Training</h2>
+            <div class="progress">
+              <div class="bar"></div>
+            </div>
+            <button id='check-and-submit' class="btn btn-large btn-primary" type="button">Submit this neural net</button>
+          </div>
         </div><!--/span-->
       </div><!--/row-->
 
@@ -238,7 +253,8 @@
           clientData = new ClientSideDataModel();
           var insertDataView = new InsertDataView({model: clientData});
           var metaDataView = new MetaDataView({model: clientData});
-          var normalizedData = new NormalizedView({model: clientData});
+          var normalizedView = new NormalizedView({model: clientData});
+          var trainingView = new TrainingView({model: clientData});
         });
       </script>
 
