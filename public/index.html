@@ -116,7 +116,7 @@
                 <%} else if( metaHash.colNameArray[i].type === undefined ){%>
                   <td><button type="button" id="type-<%= i %>" class="btn btn-inverse custom">Undef</button></td>
                 <%} else if( metaHash.colNameArray[i].type === 'discrete'){%>
-                  <td><button type="button" id="type-<%= i %>" class="btn btn-warning custom">Discrete</button></td>
+                  <td><button type="button" id="type-<%= i %>" class="btn btn-warning custom">Discrete (WIP)</button></td>
                 <%} else {%> 
                   <td><button type="button" id="type-<%= i %>" class="btn btn-primary custom">Continuous</button></td>
                 <%}%> 
@@ -155,6 +155,7 @@
           %>Target<%
           } else {
           %>Driver<%}%>
+          Index:					<%= +data.active %>
           Name:					<%= data.metaHash.colNameArray[+data.active].name %>
           Type:					<%= data.metaHash.colNameArray[+data.active].type %>
           Max:					<%= data.metaHash.colNameArray[+data.active].max %>
@@ -236,7 +237,6 @@
             <div class="progress">
               <div class="bar"></div>
             </div>
-            <button id='check-and-submit' class="btn btn-large btn-primary" type="button">Submit this neural net</button>
           </div>
         </div><!--/span-->
       </div><!--/row-->
@@ -251,6 +251,15 @@
       <script>
         $(document).ready(function(){
           clientData = new ClientSideDataModel();
+          //for testing start
+          clientData.get('metaHash').target = 4;
+          clientData.get('metaHash').colNameArray[0].skip = true;
+          clientData.get('metaHash').colNameArray[1].type = "continuous";
+          clientData.get('metaHash').colNameArray[2].type = "continuous";
+          clientData.get('metaHash').colNameArray[3].type = "continuous";
+          clientData.get('metaHash').colNameArray[4].type = "continuous";
+          clientData.get('metaHash').colNameArray[4].type = "continuous";
+          //for testing end
           var insertDataView = new InsertDataView({model: clientData});
           var metaDataView = new MetaDataView({model: clientData});
           var normalizedView = new NormalizedView({model: clientData});

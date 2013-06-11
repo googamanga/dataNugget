@@ -1,7 +1,7 @@
 importScripts("brain.js");
 
 onmessage = function(event) {
-  // throw event.data;
+  // throw event.data; // debugger
   var args = JSON.parse(event.data);
   var parameters = args[0];
   var data = args[1];

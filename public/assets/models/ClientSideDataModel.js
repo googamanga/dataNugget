@@ -8,6 +8,7 @@ var ClientSideDataModel = Backbone.Model.extend({
     'trainerError': null,
     'metaHash': {
       target: undefined,
+      nameIndexHash: {},
       sampleRate: 0.1,
       count: null,
       colNameArray: [],
@@ -1549,8 +1550,6 @@ var ClientSideDataModel = Backbone.Model.extend({
       "1527,2,15,122,12.1061\n"+
       "1528,2,15,123,11.8515\n"+
       "1529,2,15,124,11.6021\n"+
-      "1530,2,15,125,11.358\n"+
-      "1529,2,15,124,11.6021\n"+
       "1530,2,15,125,11.358\n"
   },
 
@@ -1615,10 +1614,9 @@ var ClientSideDataModel = Backbone.Model.extend({
   normalizeObject: function(unNormalizedObjects, metaHash, specializedData){
     var i = null;
     var metaArray = metaHash.colNameArray;
-    var nameIndexHash = {};
     for( i = 0; i < metaArray.length; i++){
       if(!metaArray[i].skip){
-        nameIndexHash[metaArray[i].name] = i;
+        metaHash.nameIndexHash[metaArray[i].name] = i;
         specializedData[i] = {};
         specializedData[i].name = metaArray[i].name;
         specializedData[i].unNormalized = [];
@@ -1630,9 +1628,9 @@ var ClientSideDataModel = Backbone.Model.extend({
       var keys = Object.keys(inputHash);
       for(var j = 0; j < keys.length; j++){
         var name = keys[j];
-        specializedData[nameIndexHash[name]].unNormalized.push(inputHash[name]);
-        inputHash[name] = metaArray[nameIndexHash[name]].realToNormalized(inputHash[name]);
-        specializedData[nameIndexHash[name]].normalized.push(inputHash[name]);
+        specializedData[metaHash.nameIndexHash[name]].unNormalized.push(inputHash[name]);
+        inputHash[name] = metaArray[metaHash.nameIndexHash[name]].realToNormalized(inputHash[name]);
+        specializedData[metaHash.nameIndexHash[name]].normalized.push(inputHash[name]);
       }
       var targetObj = metaArray[metaHash.target]
       var outputKey = targetObj.name;
@@ -1875,7 +1873,6 @@ var trainer = {
   onMessage : function(event) {
     var workerData = JSON.parse(event.data);
     if(workerData.type == 'progress') { // create variable progress
-      //triger event for view
       app.trainer.showProgress(workerData); // in view
     }
     else if(workerData.type == 'result') {  //create variable result

@@ -10,6 +10,8 @@ var TrainingView = Backbone.View.extend({
 
   error: null,
 
+  renderCount: 0,
+
   events: {
   },
 
@@ -55,12 +57,16 @@ var TrainingView = Backbone.View.extend({
           var randIndex = Math.floor(Math.random() * this.model.get('metaHash').count)
           if(!indexHash[randIndex]){
             indexHash[randIndex] = randIndex;
+            if(indexHash.count === 0){
+              indexHash[51] = 51;
+            }
             indexHash.count += 1;
           }
         }
         var net = new brain.NeuralNetwork().fromJSON(this.workerData.net);
         var metaHash = this.model.get('metaHash');
-        var diffSum = 0;
+        var realDiffSum = 0;
+        var normalizedDiffSum = 0;
         var text = "Date: " + Date() + "\n";
         
         for(var index in indexHash){
@@ -70,21 +76,40 @@ var TrainingView = Backbone.View.extend({
           var targetIndex = metaHash.target;
           var targetKey = metaHash.colNameArray[targetIndex].name;
           var expectedOutput = this.model.get('normalizedObject')[index].output[targetKey];
-          var diff = Math.abs(output[targetKey] - expectedOutput);
+
+          //normalized to real
+          var realExpectedOutput = metaHash.colNameArray[targetIndex].normalizedToReal(expectedOutput);
+          var realGivenOutput = metaHash.colNameArray[targetIndex].normalizedToReal(output[targetKey]);
+          var realSampleInput = {};
+          debugger
+          for(var key in sampleInput){
+            realSampleInput[key] = metaHash.colNameArray[metaHash.nameIndexHash[key]].normalizedToReal(sampleInput[key]);
+          }
+
+          //calculate diff
+          var normalizedDiff = Math.abs(output[targetKey] - expectedOutput);
+          var realDiff = Math.abs(realGivenOutput - realExpectedOutput);
           text = text + 'index: ' + index +
-                  ' input: ' +JSON.stringify(sampleInput) +
-                  " output: " + JSON.stringify(expectedOutput) +
-                  " actual output: " + output[targetKey] +
-                  " diff: " + diff + "\n";
-          diffSum += diff;
+                  ' input: ' +JSON.stringify(realSampleInput) +
+                  " output: " + JSON.stringify(realExpectedOutput) +
+                  " actual output: " + Math.round(realGivenOutput * 100) / 100 +
+                  " actual Diff: " + Math.round(realDiff * 100) / 100 +
+                  " normalized Diff: " + Math.round(normalizedDiff * 10000) / 100 + "%\n";
+          normalizedDiffSum += normalizedDiff;
+          realDiffSum += realDiff;
+
         }
-        debugger
-        var averageDiff = diffSum / indexHash.count;
-        text = "average Diff: " + averageDiff + "\n" + text;
-        $textarea = $('<textarea rows="10">')
+        var averageNormalizedDiff = normalizedDiffSum / indexHash.count;
+        var averageRealDiff = realDiffSum / indexHash.count;
+        text = "average normalized difference : " + Math.round(averageNormalizedDiff * 10000) / 100 + "%\n" + text;
+        text = "average real difference : " + Math.round(averageRealDiff * 100) / 100 + "\n" + text;
+        $textarea = $('<textarea rows="10">');
         $textarea.text(text);
         $textarea.addClass('span12');
-        $('#check-and-submit').before($textarea);
+        // debugger
+        $textarea.attr('id', 'normalizedOutput-' + this.renderCount);
+        this.renderCount += 1;
+        $('#training-view').append($textarea);
       }
     } else {
       $('#training-view .progress').hide();
