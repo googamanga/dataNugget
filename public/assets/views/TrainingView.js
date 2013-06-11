@@ -16,7 +16,8 @@ var TrainingView = Backbone.View.extend({
   initialize: function() {
     this.model.on('all:trainerMessage', function(){
       this.show = true;
-      this.onMessage(this.model.get('trainerMessage'));
+      // this.completed = 100; //turn on for debugger
+      this.onMessage(this.model.get('trainerMessage'));  // turn off for debugger
       this.render();
     },this);
     this.model.on('all:trainerError', function(){
@@ -47,11 +48,10 @@ var TrainingView = Backbone.View.extend({
       $(".bar").css("width", this.completed + "%");
       this.template = $("#training-template").html();
       if(this.completed === 100){
-        debugger
         var indexHash = {};
         indexHash.count = 0;
         var sampleSize = Math.round(this.model.get('metaHash').count * this.model.get('metaHash').sampleRate,1);
-        while(index.count < sampleSize){
+        while(indexHash.count < sampleSize){
           var randIndex = Math.floor(Math.random() * this.model.get('metaHash').count)
           if(!indexHash[randIndex]){
             indexHash[randIndex] = randIndex;
@@ -62,23 +62,29 @@ var TrainingView = Backbone.View.extend({
         var metaHash = this.model.get('metaHash');
         var diffSum = 0;
         var text = "Date: " + Date() + "\n";
+        
         for(var index in indexHash){
-          var sampleInput = metaHash.normalizedObject[index].input;
+          if(index === 'count') {continue}
+          var sampleInput = this.model.get('normalizedObject')[index].input;
           var output = net.run(sampleInput);
           var targetIndex = metaHash.target;
           var targetKey = metaHash.colNameArray[targetIndex].name;
-          var expectedOutput = metaHash.colNameArray[targetIndex].output.targetKey
-          var diff = Math.abs(output.targetKey - expectedOutput);
-          text = text + JSON.stringify(sampleInput) +
-                  " " + JSON.stringify(expectedOutput) +
-                  "     actual output: " + output.targetKey +
-                  " diff " + diff + "\n";
+          var expectedOutput = this.model.get('normalizedObject')[index].output[targetKey];
+          var diff = Math.abs(output[targetKey] - expectedOutput);
+          text = text + 'index: ' + index +
+                  ' input: ' +JSON.stringify(sampleInput) +
+                  " output: " + JSON.stringify(expectedOutput) +
+                  " actual output: " + output[targetKey] +
+                  " diff: " + diff + "\n";
           diffSum += diff;
         }
+        debugger
         var averageDiff = diffSum / indexHash.count;
         text = "average Diff: " + averageDiff + "\n" + text;
-        $textarea = $('textarea').text(text);
-        $('.training-view:last-child').before($textarea);
+        $textarea = $('<textarea rows="10">')
+        $textarea.text(text);
+        $textarea.addClass('span12');
+        $('#check-and-submit').before($textarea);
       }
     } else {
       $('#training-view .progress').hide();

@@ -15,7 +15,7 @@ var ClientSideDataModel = Backbone.Model.extend({
         parameters: {
           iterations: 10000,
           errorThresh: 0.00001,
-          callbackPeriod: 1000
+          callbackPeriod: 100
         }
       }
     },
@@ -1644,6 +1644,7 @@ var ClientSideDataModel = Backbone.Model.extend({
   },
   trainOnData: function() {
     if(window.Worker) {
+    // if(false){
       console.log('start with worker');
       var worker = new Worker("assets/javascripts/training-worker.js");
       var self = this;
@@ -1662,7 +1663,8 @@ var ClientSideDataModel = Backbone.Model.extend({
     } else {
       console.log('start with OUT worker');
       var net = new brain.NeuralNetwork();
-      net.train(inputData, this.parameters);
+      net.train(this.get('normalizedObject'), this.get('metaHash').trainer.parameters);
+      this.trigger('all:trainerMessage');
       console.log("ran with OUT workeer")
     }
   },
