@@ -155,17 +155,17 @@
           %>Target<%
           } else {
           %>Driver<%}%>
-          Index:					<%= +data.active %>
-          Name:					<%= data.metaHash.colNameArray[+data.active].name %>
-          Type:					<%= data.metaHash.colNameArray[+data.active].type %>
-          Max:					<%= data.metaHash.colNameArray[+data.active].max %>
-          Min:					<%= data.metaHash.colNameArray[+data.active].min %>
+          Index:          <%= +data.active %>
+          Name:         <%= data.metaHash.colNameArray[+data.active].name %>
+          Type:         <%= data.metaHash.colNameArray[+data.active].type %>
+          Max:          <%= data.metaHash.colNameArray[+data.active].max %>
+          Min:          <%= data.metaHash.colNameArray[+data.active].min %>
 
           POSITION,INPUT,NORMALIZED
           <% if(data.metaHash.colNameArray[+data.active].type === 'continuous'){
             for( var i = 0; i < data.specializedData[+data.active].unNormalized.length; i++){
           %><% print(i + ',' +  data.specializedData[+data.active].unNormalized[i] + ',' + data.specializedData[+data.active].normalized[i]) %>
-          <% }  } else {%>	
+          <% }  } else {%>  
             NO HANDLER FOR DISCRETE YET!
           <% } %>
         </textarea>
@@ -173,10 +173,31 @@
       <button id='trainOnData' class="btn btn-large btn-primary" type="button">Start training on the data</button>
     </script>
 
-    <script type="text/html" id='training-template'>
-      <%for(var i = 0; i < samples.length; i++){%>
-        <p><%= samples[i].OPRICE%><p>
-      <%}%>
+    <script type="text/html" id='input-user-template'>
+      <div style='overflow-x:auto'>
+        <table class="table table-bordered table-hover table-condensed">
+          <thead>
+            <tr>
+              <th><%= metaHash.colNameArray[+metaHash.target].name %></th>
+              <% for(var i = 0; i < metaHash.colNameArray.length; i++) { %>
+                <% if(metaHash.colNameArray[i]).skip === false || +metaHash.target !== i %>
+                  <th><%= metaHash.colNameArray[i].name %></th>
+                <% } %>
+              <% } %>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong><%= targetRealOutput %></strong></td>
+              <% for(var i = 0; i < metaHash.colNameArray.length; i++) { %>
+                <% if(metaHash.colNameArray[i]).skip === false || +metaHash.target !== i %>
+                  <td><input class='<%= metaHash.colNameArray[i].name %>' type="text"><td/>
+                <% } %>
+              <% } %>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </script>
 
     <div class="navbar navbar-inverse navbar-fixed-top">

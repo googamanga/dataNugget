@@ -6,6 +6,7 @@ var ClientSideDataModel = Backbone.Model.extend({
     'normalizedCsvData': "",
     'trainerMessage': null,
     'trainerError': null,
+    'results': null,
     'metaHash': {
       target: undefined,
       nameIndexHash: {},
@@ -14,7 +15,7 @@ var ClientSideDataModel = Backbone.Model.extend({
       colNameArray: [],
       trainer: {
         parameters: {
-          iterations: 10000,
+          iterations: 1000,
           errorThresh: 0.00001,
           callbackPeriod: 100
         }
@@ -1555,6 +1556,7 @@ var ClientSideDataModel = Backbone.Model.extend({
 
 
   initialize: function(){
+    if(!this.get('results')) {this.set('results', new Results())};
     this.csvToMetaData();
   },
 
@@ -1849,6 +1851,11 @@ var ClientSideDataModel = Backbone.Model.extend({
         return objArr;
       }
     }
+  },
+  createResultModel: function(viewId){
+    debugger
+    this.get('results').add(new Result({viewId: viewId}));
+    //should trigger add for training view
   }
 });
 
@@ -1894,7 +1901,15 @@ var trainer = {
   }
 }
 
+var Results = Backbone.Collection.extend({
+  model: Result
+});
 
+var Result = Backbone.Model.extend({
+  initialize: function(){
+    console.log('hello from Result!');
+  }
+});
 
 
 
