@@ -180,7 +180,7 @@
             <tr>
               <th><%= metaHash.colNameArray[+metaHash.target].name %></th>
               <% for(var i = 0; i < metaHash.colNameArray.length; i++) { %>
-                <% if(metaHash.colNameArray[i]).skip === false || +metaHash.target !== i %>
+                <% if(metaHash.colNameArray[i].skip === false && +metaHash.target !== i){ %>
                   <th><%= metaHash.colNameArray[i].name %></th>
                 <% } %>
               <% } %>
@@ -190,8 +190,8 @@
             <tr>
               <td><strong><%= targetRealOutput %></strong></td>
               <% for(var i = 0; i < metaHash.colNameArray.length; i++) { %>
-                <% if(metaHash.colNameArray[i]).skip === false || +metaHash.target !== i %>
-                  <td><input class='<%= metaHash.colNameArray[i].name %>' type="text"><td/>
+                <% if(metaHash.colNameArray[i].skip === false && +metaHash.target !== i){ %>
+                  <td><input class='<%= metaHash.colNameArray[i].name %>' type="text">
                 <% } %>
               <% } %>
             </tr>

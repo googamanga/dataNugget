@@ -44,8 +44,8 @@ var TrainingView = Backbone.View.extend({
       this.completed = 100 * this.workerData.iterations / this.model.get('metaHash').trainer.parameters.iterations;
     } else if(this.workerData.type == 'result') {
       this.completed = 100;
+      // this.render();
       console.log('training done!');
-      debugger
       var subViewId = "result" + this.subViewCount;
       this.model.createResultModel(subViewId, this.workerData.net);
       //wait for add event
@@ -61,78 +61,6 @@ var TrainingView = Backbone.View.extend({
       $('#training-view .progress').show();
       $('#check-and-submit').show();
       $(".bar").css("width", this.completed + "%");
-      if(this.completed === 100){
-      //   var indexHash = {};
-      //   indexHash.count = 0;
-      //   var sampleSize = Math.round(this.model.get('metaHash').count * this.model.get('metaHash').sampleRate,1);
-      //   while(indexHash.count < sampleSize){
-      //     var randIndex = Math.floor(Math.random() * this.model.get('metaHash').count)
-      //     if(!indexHash[randIndex]){
-      //       indexHash[randIndex] = randIndex;
-      //       if(indexHash.count === 0){
-      //         indexHash[51] = 51;
-      //       }
-      //       indexHash.count += 1;
-      //     }
-      //   }
-
-      //   var net = new brain.NeuralNetwork().fromJSON(this.workerData.net);
-      //   var metaHash = this.model.get('metaHash');
-      //   var realDiffSum = 0;
-      //   var normalizedDiffSum = 0;
-      //   var text = "Date: " + Date() + "\n";
-        
-      //   for(var index in indexHash){
-      //     if(index === 'count') {continue}
-      //     var sampleInput = this.model.get('normalizedObject')[index].input;
-      //     var output = net.run(sampleInput);
-      //     var targetIndex = metaHash.target;
-      //     var targetKey = metaHash.colNameArray[targetIndex].name;
-      //     var expectedOutput = this.model.get('normalizedObject')[index].output[targetKey];
-
-      //     //normalized to real
-      //     var realExpectedOutput = metaHash.colNameArray[targetIndex].normalizedToReal(expectedOutput);
-      //     var realGivenOutput = metaHash.colNameArray[targetIndex].normalizedToReal(output[targetKey]);
-      //     var realSampleInput = {};
-      //     debugger
-      //     for(var key in sampleInput){
-      //       realSampleInput[key] = metaHash.colNameArray[metaHash.nameIndexHash[key]].normalizedToReal(sampleInput[key]);
-      //     }
-
-      //     //calculate diff
-      //     var normalizedDiff = Math.abs(output[targetKey] - expectedOutput);
-      //     var realDiff = Math.abs(realGivenOutput - realExpectedOutput);
-      //     text = text + 'index: ' + index +
-      //             ' input: ' +JSON.stringify(realSampleInput) +
-      //             " output: " + JSON.stringify(realExpectedOutput) +
-      //             " actual output: " + Math.round(realGivenOutput * 100) / 100 +
-      //             " actual Diff: " + Math.round(realDiff * 100) / 100 +
-      //             " normalized Diff: " + Math.round(normalizedDiff * 10000) / 100 + "%\n";
-      //     normalizedDiffSum += normalizedDiff;
-      //     realDiffSum += realDiff;
-
-      //   }
-      //   var averageNormalizedDiff = normalizedDiffSum / indexHash.count;
-      //   var averageRealDiff = realDiffSum / indexHash.count;
-      //   text = "average normalized difference : " + Math.round(averageNormalizedDiff * 10000) / 100 + "%\n" + text;
-      //   text = "average real difference : " + Math.round(averageRealDiff * 100) / 100 + "\n" + text;
-      //   $textarea = $('<textarea rows="10">');
-      //   $textarea.text(text);
-      //   $textarea.addClass('span12');
-      //   var textAreaId = 'sampleOutput-' + this.renderCount
-      //   $textarea.attr('id', textAreaId);
-      //   this.renderCount += 1;
-      //   $('#training-view').append($textarea);
-
-
-      //   this.template = $("#input-user-template").html();
-      //   $('#' + textAreaId).append(_.template(this.template, {
-      //     metaHash: this.model.get('metaHash'),
-      //     targetRealOutput: this.realCalculatedOutput,
-
-      //   }));
-
-      // }
     } else {
       $('#training-view .progress').hide();
     }
@@ -149,6 +77,16 @@ var ResultView = Backbone.View.extend({
   },
 
   render: function(){
-    this.$el.append("<p>hello from "+this.id+"!</p>");
+    $textarea = $('<textarea rows="10">');
+    $textarea.text(this.model.get('realOutput'));
+    $textarea.addClass('span12');
+    var textAreaId = 'sampleOutput-' + this.id;
+    $textarea.attr('id', textAreaId);
+    this.$el.append($textarea);
+    this.template = $("#input-user-template").html();
+    $('#' + textAreaId).after(_.template(this.template, {
+      metaHash: this.model.get('metaHash'),
+      targetRealOutput: this.model.get('text'),
+    })); 
   }
 });

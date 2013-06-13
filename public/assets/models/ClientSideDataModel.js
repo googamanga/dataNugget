@@ -1852,10 +1852,59 @@ var ClientSideDataModel = Backbone.Model.extend({
       }
     }
   },
-  createResultModel: function(viewId){
-    debugger
-    this.get('results').add(new Result({viewId: viewId}));
-    //should trigger add for training view
+  createResultModel: function(viewId, workerNet ){
+
+    var indexHash = {};
+    indexHash.count = 0;
+    var sampleSize = Math.round(this.get('metaHash').count * this.get('metaHash').sampleRate,1);
+    while(indexHash.count < sampleSize){
+      var randIndex = Math.floor(Math.random() * this.get('metaHash').count)
+      if(!indexHash[randIndex]){
+        indexHash[randIndex] = randIndex;
+        indexHash.count += 1;
+      }
+    }
+
+    var net = new brain.NeuralNetwork().fromJSON(workerNet);
+    var metaHash = this.get('metaHash');
+    var realDiffSum = 0;
+    var normalizedDiffSum = 0;
+    var text = "Date: " + Date() + "\n";
+    for(var index in indexHash){
+      if(index === 'count') {continue}
+      var sampleInput = this.get('normalizedObject')[index].input;
+      var output = net.run(sampleInput);
+      var targetIndex = metaHash.target;
+      var targetKey = metaHash.colNameArray[targetIndex].name;
+      var expectedOutput = this.get('normalizedObject')[index].output[targetKey];
+
+      //normalized to real
+      var realExpectedOutput = metaHash.colNameArray[targetIndex].normalizedToReal(expectedOutput);
+      var realGivenOutput = metaHash.colNameArray[targetIndex].normalizedToReal(output[targetKey]);
+      var realSampleInput = {};
+
+      for(var key in sampleInput){
+        realSampleInput[key] = metaHash.colNameArray[metaHash.nameIndexHash[key]].normalizedToReal(sampleInput[key]);
+      }
+      //calculate diff
+      var normalizedDiff = Math.abs(output[targetKey] - expectedOutput);
+      var realDiff = Math.abs(realGivenOutput - realExpectedOutput);
+      text = text + 'index: ' + index +
+              ' input: ' +JSON.stringify(realSampleInput) +
+              " output: " + JSON.stringify(realExpectedOutput) +
+              " actual output: " + Math.round(realGivenOutput * 100) / 100 +
+              " actual Diff: " + Math.round(realDiff * 100) / 100 +
+              " normalized Diff: " + Math.round(normalizedDiff * 10000) / 100 + "%\n";
+      normalizedDiffSum += normalizedDiff;
+      realDiffSum += realDiff;
+
+    }
+    var averageNormalizedDiff = normalizedDiffSum / indexHash.count;
+    var averageRealDiff = realDiffSum / indexHash.count;
+    text = "average normalized difference : " + Math.round(averageNormalizedDiff * 10000) / 100 + "%\n" + text;
+    text = "average real difference : " + Math.round(averageRealDiff * 100) / 100 + "\n" + text;
+
+    this.get('results').add(new Result({viewId: viewId, realOutput: text, metaHash: this.get('metaHash')}));
   }
 });
 
@@ -1907,7 +1956,9 @@ var Results = Backbone.Collection.extend({
 
 var Result = Backbone.Model.extend({
   initialize: function(){
-    console.log('hello from Result!');
+    //viewId
+    //realOutput
+    //metaHash
   }
 });
 
