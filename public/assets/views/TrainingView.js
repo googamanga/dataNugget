@@ -14,9 +14,6 @@ var TrainingView = Backbone.View.extend({
 
   subViewCount: 0,
 
-  events: {
-  },
-
   initialize: function() {
     this.model.on('all:trainerMessage', function(){
       this.show = true;
@@ -73,20 +70,35 @@ var ResultView = Backbone.View.extend({
   el:'#training-view',
 
   initialize: function(){
+    var divId = 'sampleOutput-' + this.id;
+    var $div = $('<div id=' + divId + '>Hello</div>');
+    this.$el.append($div);
+    this.$el = $div;
+
+    $textarea = $('<textarea rows="10">');
+    $textarea.text(this.model.get('realOutput'));
+    $textarea.addClass('span12');
+    this.$el.append($textarea);
+
+    this.template = $("#input-user-template").html();
+
+    var self = this;
+
+    this.$el.on('keyup', 'input', function(event){
+      self.model.update(event.target.className, event.target.value);
+    });
+
+    this.model.on('change:targetOutputRealValue', function(){
+      debugger
+      this.render();
+    },this);
     this.render();
   },
 
   render: function(){
-    $textarea = $('<textarea rows="10">');
-    $textarea.text(this.model.get('realOutput'));
-    $textarea.addClass('span12');
-    var textAreaId = 'sampleOutput-' + this.id;
-    $textarea.attr('id', textAreaId);
-    this.$el.append($textarea);
-    this.template = $("#input-user-template").html();
-    $('#' + textAreaId).after(_.template(this.template, {
+    this.$el.append(_.template(this.template, {
       metaHash: this.model.get('metaHash'),
-      targetRealOutput: this.model.get('text'),
+      targetOutputRealValue: this.model.get('targetOutputRealValue'),
     })); 
   }
 });

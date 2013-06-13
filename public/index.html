@@ -175,7 +175,7 @@
 
     <script type="text/html" id='input-user-template'>
       <div style='overflow-x:auto'>
-        <table class="table table-bordered table-hover table-condensed">
+        <table class="table table-bordered table-condensed">
           <thead>
             <tr>
               <th><%= metaHash.colNameArray[+metaHash.target].name %></th>
@@ -188,7 +188,7 @@
           </thead>
           <tbody>
             <tr>
-              <td><strong><%= targetRealOutput %></strong></td>
+              <td><strong><%= targetOutputRealValue %></strong></td>
               <% for(var i = 0; i < metaHash.colNameArray.length; i++) { %>
                 <% if(metaHash.colNameArray[i].skip === false && +metaHash.target !== i){ %>
                   <td><input class='<%= metaHash.colNameArray[i].name %>' type="text">

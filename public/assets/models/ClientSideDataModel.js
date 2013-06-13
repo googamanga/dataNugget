@@ -1903,8 +1903,11 @@ var ClientSideDataModel = Backbone.Model.extend({
     var averageRealDiff = realDiffSum / indexHash.count;
     text = "average normalized difference : " + Math.round(averageNormalizedDiff * 10000) / 100 + "%\n" + text;
     text = "average real difference : " + Math.round(averageRealDiff * 100) / 100 + "\n" + text;
-
-    this.get('results').add(new Result({viewId: viewId, realOutput: text, metaHash: this.get('metaHash')}));
+    this.get('results').add(new Result({
+      viewId: viewId,
+      realOutput: text,
+      metaHash: this.get('metaHash'),
+      net: net}));
   }
 });
 
@@ -1955,10 +1958,24 @@ var Results = Backbone.Collection.extend({
 });
 
 var Result = Backbone.Model.extend({
+  defaults:{
+    input: {},
+    targetOutputRealValue: null
+  },
   initialize: function(){
     //viewId
     //realOutput
     //metaHash
+    //net
+  },
+  update: function(key, value){
+    // debugger
+    this.get('input')[key] = value;
+    var output = this.get('net').run(JSON.stringify({input: this.get('input')}));
+    var targetKey = Object.keys(output)[0]
+    this.set('targetOutputRealValue', output[targetKeys]);
+    console.log('from update');
+    this.trigger('change:targetOutputRealValue');
   }
 });
 
