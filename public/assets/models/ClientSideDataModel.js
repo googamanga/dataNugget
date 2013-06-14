@@ -1569,7 +1569,7 @@ var ClientSideDataModel = Backbone.Model.extend({
       _.each(list,function(value, index){
         if(!array[index]){
           array[index] = {};
-          array[index].skip = false;
+          array[index].skip = true;    //DEBUGG
           array[index].type = undefined;
         }
         array[index].name = value;
@@ -1722,6 +1722,7 @@ var ClientSideDataModel = Backbone.Model.extend({
     {
       // remove leading/trailing whitespace
       line[i] = line[i].replace(/^[\s]*|[\s]*$/g, "");
+      line[i] = line[i].replace(/%/g,"");
       // remove leading/trailing quotes
       if (line[i].charAt(0) == '"') line[i] = line[i].replace(/^"|"$/g, "");
       else if (line[i].charAt(0) == "'") line[i] = line[i].replace(/^'|'$/g, "");
@@ -1960,6 +1961,7 @@ var Results = Backbone.Collection.extend({
 var Result = Backbone.Model.extend({
   defaults:{
     input: {},
+    normalizeInput: {},
     targetOutputRealValue: null
   },
   initialize: function(){
@@ -1968,12 +1970,15 @@ var Result = Backbone.Model.extend({
     //metaHash
     //net
   },
-  update: function(key, value){
-    // debugger
-    this.get('input')[key] = value;
-    var output = this.get('net').run(JSON.stringify({input: this.get('input')}));
+  update: function(input){
+    this.set('input', input);
+    for(var key in input){
+      var index = this.get('metaHash').nameIndexHash[key];
+      this.get('normalizeInput')[key] = this.get('metaHash').colNameArray[index].realToNormalized(this.get('input')[key]);
+    }
+    var output = this.get('net').run(this.get('normalizeInput'));
     var targetKey = Object.keys(output)[0]
-    this.set('targetOutputRealValue', output[targetKeys]);
+    this.set('targetOutputRealValue', this.get('metaHash').colNameArray[this.get('metaHash').target].normalizedToReal(output[targetKey]));
     console.log('from update');
     this.trigger('change:targetOutputRealValue');
   }

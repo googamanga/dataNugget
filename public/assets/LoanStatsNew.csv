@@ -1,0 +1,7 @@
+Fully Paid,0
+Current,0
+Charged Off,1
+Late (31-120 days),0.9
+Late (16-30 days),0.8
+Default,1
+In Grace Period,0.7

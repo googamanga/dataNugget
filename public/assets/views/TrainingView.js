@@ -17,7 +17,6 @@ var TrainingView = Backbone.View.extend({
   initialize: function() {
     this.model.on('all:trainerMessage', function(){
       this.show = true;
-      // this.completed = 100; //turn on for debugger
       this.onMessage(this.model.get('trainerMessage'));  // turn off for debugger
       this.render();
     },this);
@@ -38,6 +37,7 @@ var TrainingView = Backbone.View.extend({
   onMessage : function(event) {
     this.workerData = JSON.parse(event.data);
     if(this.workerData.type == 'progress') {
+      console.log('error: ' + this.workerData.error);
       this.completed = 100 * this.workerData.iterations / this.model.get('metaHash').trainer.parameters.iterations;
     } else if(this.workerData.type == 'result') {
       this.completed = 100;
@@ -71,7 +71,7 @@ var ResultView = Backbone.View.extend({
 
   initialize: function(){
     var divId = 'sampleOutput-' + this.id;
-    var $div = $('<div id=' + divId + '>Hello</div>');
+    var $div = $('<div id=' + divId + '></div>');
     this.$el.append($div);
     this.$el = $div;
 
@@ -84,21 +84,30 @@ var ResultView = Backbone.View.extend({
 
     var self = this;
 
-    this.$el.on('keyup', 'input', function(event){
-      self.model.update(event.target.className, event.target.value);
+    this.$el.on('keypress', 'input', function(event){  //listen to 'enter'
+      if(event.which == 13) {
+        event.preventDefault();
+        var input = {};
+        var elements = self.$el.find('input').toArray();
+        for(var i = 0; i < elements.length; i++){
+          input[elements[i].className] = elements[i].value;
+        }
+        self.model.update(input);
+      }
     });
 
     this.model.on('change:targetOutputRealValue', function(){
-      debugger
       this.render();
     },this);
     this.render();
   },
 
   render: function(){
+    window.resultModel = this.model;
+    this.$el.find('.dynamic-table').remove();
     this.$el.append(_.template(this.template, {
       metaHash: this.model.get('metaHash'),
-      targetOutputRealValue: this.model.get('targetOutputRealValue'),
+      model: this.model,
     })); 
   }
 });

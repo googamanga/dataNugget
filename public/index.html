@@ -174,7 +174,7 @@
     </script>
 
     <script type="text/html" id='input-user-template'>
-      <div style='overflow-x:auto'>
+      <div class='dynamic-table' style='overflow-x:auto'>
         <table class="table table-bordered table-condensed">
           <thead>
             <tr>
@@ -188,10 +188,10 @@
           </thead>
           <tbody>
             <tr>
-              <td><strong><%= targetOutputRealValue %></strong></td>
+              <td><strong><%= model.get('targetOutputRealValue') %></strong></td>
               <% for(var i = 0; i < metaHash.colNameArray.length; i++) { %>
                 <% if(metaHash.colNameArray[i].skip === false && +metaHash.target !== i){ %>
-                  <td><input class='<%= metaHash.colNameArray[i].name %>' type="text">
+                  <td><input class='<%= metaHash.colNameArray[i].name %>' type="text" value=<%= model.get('input')[metaHash.colNameArray[i].name] %>>
                 <% } %>
               <% } %>
             </tr>
@@ -273,14 +273,14 @@
         $(document).ready(function(){
           clientData = new ClientSideDataModel();
           //for testing start
-          clientData.get('metaHash').target = 4;
-          clientData.get('metaHash').colNameArray[0].skip = true;
-          clientData.get('metaHash').colNameArray[1].type = "continuous";
-          clientData.get('metaHash').colNameArray[2].type = "continuous";
-          clientData.get('metaHash').colNameArray[3].type = "continuous";
-          clientData.get('metaHash').colNameArray[4].type = "continuous";
-          clientData.get('metaHash').colNameArray[4].type = "continuous";
-          //for testing end
+          // clientData.get('metaHash').target = 4;
+          // clientData.get('metaHash').colNameArray[0].skip = true;
+          // clientData.get('metaHash').colNameArray[1].type = "continuous";
+          // clientData.get('metaHash').colNameArray[2].type = "continuous";
+          // clientData.get('metaHash').colNameArray[3].type = "continuous";
+          // clientData.get('metaHash').colNameArray[4].type = "continuous";
+          // clientData.get('metaHash').colNameArray[4].type = "continuous";
+          // //for testing end
           var insertDataView = new InsertDataView({model: clientData});
           var metaDataView = new MetaDataView({model: clientData});
           var normalizedView = new NormalizedView({model: clientData});
