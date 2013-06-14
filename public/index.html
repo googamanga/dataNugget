@@ -273,13 +273,15 @@
         $(document).ready(function(){
           clientData = new ClientSideDataModel();
           //for testing start
-          // clientData.get('metaHash').target = 4;
-          // clientData.get('metaHash').colNameArray[0].skip = true;
-          // clientData.get('metaHash').colNameArray[1].type = "continuous";
-          // clientData.get('metaHash').colNameArray[2].type = "continuous";
-          // clientData.get('metaHash').colNameArray[3].type = "continuous";
-          // clientData.get('metaHash').colNameArray[4].type = "continuous";
-          // clientData.get('metaHash').colNameArray[4].type = "continuous";
+          clientData.get('metaHash').target = 4;
+          clientData.get('metaHash').colNameArray[1].type = "continuous";
+          clientData.get('metaHash').colNameArray[1].skip = false;
+          clientData.get('metaHash').colNameArray[2].type = "continuous";
+          clientData.get('metaHash').colNameArray[2].skip = false;
+          clientData.get('metaHash').colNameArray[3].type = "continuous";
+          clientData.get('metaHash').colNameArray[3].skip = false;
+          clientData.get('metaHash').colNameArray[4].type = "continuous";
+          clientData.get('metaHash').colNameArray[4].skip = false;
           // //for testing end
           var insertDataView = new InsertDataView({model: clientData});
           var metaDataView = new MetaDataView({model: clientData});
