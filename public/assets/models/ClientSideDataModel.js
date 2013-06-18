@@ -17,7 +17,7 @@ var ClientSideDataModel = Backbone.Model.extend({
         parameters: {
           iterations: 1000,
           errorThresh: 0.00001,
-          callbackPeriod: 100
+          callbackPeriod: 10
         }
       }
     },
@@ -1905,7 +1905,6 @@ var ClientSideDataModel = Backbone.Model.extend({
     var averageRealDiff = realDiffSum / indexHash.count;
     text = "average normalized difference : " + Math.round(averageNormalizedDiff * 10000) / 100 + "%\n" + text;
     text = "average real difference : " + Math.round(averageRealDiff * 100) / 100 + "\n" + text;
-    debugger
     this.get('results').add(new Result({
       viewId: "result-" + this.get('results').length,
       realOutput: text,

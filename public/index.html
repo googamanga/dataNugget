@@ -174,7 +174,7 @@
     </script>
 
     <script type="text/html" id='input-user-template'>
-      <div class='dynamic-table' style='overflow-x:auto'>
+      <form class='dynamic-table' style='overflow-x:auto'>
         <table class="table table-bordered table-condensed">
           <thead>
             <tr>
@@ -197,7 +197,8 @@
             </tr>
           </tbody>
         </table>
-      </div>
+        <button class="btn btn-primary">Predict!</button>
+      </form>
     </script>
 
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -228,19 +229,8 @@
         <div class="span2">
             <div class="well sidebar-nav">
               <ul class="nav nav-list">
-                <li class="nav-header">Sidebar</li>
-                <li class="active"><a href="#">Link</a></li>
-                <li><a href="#">Link</a></li>
-                <li><a href="#">Link</a></li>
-                <li><a href="#">Link</a></li>
-                <li class="nav-header">Sidebar</li>
-                <li><a href="#">Link</a></li>
-                <li><a href="#">Link</a></li>
-                <li><a href="#">Link</a></li>
-                <li><a href="#">Link</a></li>
-                <li><a href="#">Link</a></li>
-                <li><a href="#">Link</a></li>
-                <li class="nav-header">Sidebar</li>
+                <li class="nav-header">Sidear</li>
+                <li class="active"><a href="#"></a></li>
                 <li><a href="#">Link</a></li>
                 <li><a href="#">Link</a></li>
                 <li><a href="#">Link</a></li>
@@ -288,7 +278,7 @@
           var metaDataView = new MetaDataView({model: clientData});
           var normalizedView = new NormalizedView({model: clientData});
           var progressView = new ProgressView({model: clientData});
-          var internalTrainingViews = new InternalTrainingViews({model: clientData});
+          internalTrainingViews = new InternalTrainingViews({model: clientData});
         });
       </script>
 
