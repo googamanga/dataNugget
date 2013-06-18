@@ -1643,6 +1643,7 @@ var ClientSideDataModel = Backbone.Model.extend({
     return unNormalizedObjects;
   },
   trainOnData: function() {
+      console.log('triggering worker!!!');
     if(window.Worker) {
     // if(false){
       console.log('start with worker');
@@ -1853,7 +1854,7 @@ var ClientSideDataModel = Backbone.Model.extend({
       }
     }
   },
-  createResultModel: function(viewId, workerNet ){
+  createResultModel: function(workerNet ){
 
     var indexHash = {};
     indexHash.count = 0;
@@ -1904,55 +1905,15 @@ var ClientSideDataModel = Backbone.Model.extend({
     var averageRealDiff = realDiffSum / indexHash.count;
     text = "average normalized difference : " + Math.round(averageNormalizedDiff * 10000) / 100 + "%\n" + text;
     text = "average real difference : " + Math.round(averageRealDiff * 100) / 100 + "\n" + text;
+    debugger
     this.get('results').add(new Result({
-      viewId: viewId,
+      viewId: "result-" + this.get('results').length,
       realOutput: text,
       metaHash: this.get('metaHash'),
       net: net}));
   }
 });
 
-var trainer = {
-
-  trainNetwork : function(parameters, inputData) {
-    if(window.Worker) {
-      console.log('start with worker');
-      var worker = new Worker("assets/javascripts/training-worker.js");
-      worker.onmessage = this.onMessage;
-      worker.onerror = this.onError;
-      worker.postMessage(JSON.stringify([parameters,inputData]));
-      console.log('done with worker');
-    } else {
-      console.log('start with OUT worker');
-      var net = new brain.NeuralNetwork();
-      net.train(inputData, this.parameters);
-      console.log("ran with OUT workeer")
-    }
-  },
-
-  onMessage : function(event) {
-    var workerData = JSON.parse(event.data);
-    if(workerData.type == 'progress') { // create variable progress
-      app.trainer.showProgress(workerData); // in view
-    }
-    else if(workerData.type == 'result') {  //create variable result
-      var net = new brain.NeuralNetwork().fromJSON(workerData.net);
-      console.log('training done!');
-      output = net.run({"VLTY":"1","TIME":"0.666666666667","STRIKE":".992"});
-      $('.container').append($('<p>output: ' + Math.round(output['OPRICE']*100)/100 + ' should be 0.25<p>'))
-    }
-  },
-
-  onError : function(event) {//create variable error
-    $("#training-message").text("error training network: " + event.message);
-  },
-
-  showProgress : function(progress) {
-    var completed = progress.iterations / this.parameters.iterations * 100;
-    console.log('complete %:', Math.round(completed, 1), 'error:', progress.error);
-    $(".bar").css("width", completed + "%");
-  }
-}
 
 var Results = Backbone.Collection.extend({
   model: Result

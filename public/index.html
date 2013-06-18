@@ -255,9 +255,10 @@
           <div id='normalized-data' class="hero-unit"></div>
           <div id='training-view' class="hero-unit">
             <h2>Training</h2>
-            <div class="progress">
-              <div class="bar"></div>
+            <div class="progress hide">
+                <div class="bar"></div>
             </div>
+            <div id='internal_training_views' class="hide"></div>
           </div>
         </div><!--/span-->
       </div><!--/row-->
@@ -286,7 +287,8 @@
           var insertDataView = new InsertDataView({model: clientData});
           var metaDataView = new MetaDataView({model: clientData});
           var normalizedView = new NormalizedView({model: clientData});
-          var trainingView = new TrainingView({model: clientData});
+          var progressView = new ProgressView({model: clientData});
+          var internalTrainingViews = new InternalTrainingViews({model: clientData});
         });
       </script>
 
