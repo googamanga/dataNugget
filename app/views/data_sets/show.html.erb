@@ -9,7 +9,10 @@
   <b>Trained function:</b>
   <%= @data_set.trained_function %>
 </p>
-
+<p>
+  <b>Name:</b>
+  <%= @data_set.name %>
+</p>
 
 <%= link_to 'Edit', edit_data_set_path(@data_set) %> |
 <%= link_to 'Back', data_sets_path %>
