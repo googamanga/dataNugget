@@ -58,6 +58,7 @@
     <script src="assets/views/MetaDataView.js"></script>
     <script src="assets/views/NormalizedView.js"></script>
     <script src="assets/views/TrainingView.js"></script>
+    <script src="assets/views/SubmitTrainedNetView.js"></script>
 
     <!--modles-->
     <script src="assets/models/ClientSideDataModel.js"></script>
@@ -71,7 +72,7 @@
       <button id='massageCsvButton' class="btn btn-large btn-primary" type="button">Massage CSV Data</button>
     </script>
     <script type="text/html" id='meta-data-work-template'>
-      <h2>Massage the Data!</h2>
+      <h2>Massage the Data</h2>
       <div style='overflow-x:auto'>
         <table class="table table-bordered table-hover table-condensed">
           <caption><strong>Please go through the selections in the table below, there should not be any "Undef" items</strong></caption>
@@ -129,7 +130,7 @@
     </script>
 
     <script type="text/html" id='normalized-csv-template'>
-      <h2>Normalized Data!</h2>
+      <h2>Data Normalized!</h2>
       <ul id='normalized_data_nav' class="nav nav-pills">
         <% if( data.active === 'data' ){%>
           <li><button type="button" id="tab-data" class="btn btn-primary">Normalized Data</button></li>

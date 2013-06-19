@@ -1556,7 +1556,9 @@ var ClientSideDataModel = Backbone.Model.extend({
 
 
   initialize: function(){
-    if(!this.get('results')) {this.set('results', new Results())};
+    if(!this.get('results')) {
+      this.set('results', new Results())
+    }
     this.csvToMetaData();
   },
 
@@ -1915,6 +1917,7 @@ var ClientSideDataModel = Backbone.Model.extend({
 
 
 var Results = Backbone.Collection.extend({
+  url: '/data_sets',
   model: Result
 });
 
@@ -1922,7 +1925,8 @@ var Result = Backbone.Model.extend({
   defaults:{
     input: {},
     normalizeInput: {},
-    targetOutputRealValue: null
+    targetOutputRealValue: null,
+    name: null
   },
   initialize: function(){
     //viewId
@@ -1940,15 +1944,25 @@ var Result = Backbone.Model.extend({
     var targetKey = Object.keys(output)[0]
     this.set('targetOutputRealValue', this.get('metaHash').colNameArray[this.get('metaHash').target].normalizedToReal(output[targetKey]));
     this.trigger('change:targetOutputRealValue');
+  },
+  postResult: function(name){
+    this.attributes.name = name;
+    this.save();
+  },
+  toJSON : function(){
+    tempModel = this.clone();
+    delete tempModel.attributes.input;
+    delete tempModel.attributes.normalizeInput;
+    delete tempModel.attributes.targetOutputRealValue;
+    tempModel.attributes.metaData = this.get('metaHash').colNameArray;
+    delete tempModel.attributes.metaHash;
+    delete tempModel.attributes.viewId;
+    delete tempModel.attributes.realOutput;
+    tempModel.attributes.trained_function = this.get('net');
+    delete tempModel.attributes.net;
+    return tempModel.attributes;
   }
 });
-
-
-
-
-
-
-
 
 
 
