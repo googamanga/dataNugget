@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Meta data:</b>
+  <%= @data_set.meta_data %>
+</p>
+
+<p>
+  <b>Trained function:</b>
+  <%= @data_set.trained_function %>
+</p>
+
+
+<%= link_to 'Edit', edit_data_set_path(@data_set) %> |
+<%= link_to 'Back', data_sets_path %>
