@@ -67,8 +67,8 @@ var ResultView = Backbone.View.extend({
     this.$el.append('<div class="userInput hide"></div>');
     this.userInput = new UserInput({model: this.model, el: this.$('.userInput')}).render();
 
-    this.$el.append('<div class="functionView hide"></div>');
-    this.functionView = new FunctionView({model: this.model, el: this.$('.functionView')}).render();
+    // this.$el.append('<div class="functionView hide"></div>');DOES NOT WORK
+    // this.functionView = new FunctionView({model: this.model, el: this.$('.functionView')}).render();DOES NOT WORK
   }
 });
 
@@ -128,7 +128,7 @@ var UserInput = Backbone.View.extend({
   }
 });
 
-var FunctionView = Backbone.View.extend({
+var FunctionView = Backbone.View.extend({  // NOT USED  
   render: function(){
     this.$el.removeClass('hide');
     this.$el.append("<p>Feel free to copy this javascript function to calculate your inputs anywhere!</p>");

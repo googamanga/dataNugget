@@ -46,7 +46,7 @@ var NormalizedView = Backbone.View.extend({
         }
       }));
     } else {
-      this.$el.html('<h3>Normalized Data</h3>');
+      this.$el.html('<h2>Normalized Data</h2>');
     }
     console.log('normalized data rendered');
     return this;

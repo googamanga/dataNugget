@@ -17,7 +17,7 @@ var ClientSideDataModel = Backbone.Model.extend({
         parameters: {
           iterations: 1000,
           errorThresh: 0.00001,
-          callbackPeriod: 10
+          callbackPeriod: 100
         }
       }
     },
@@ -1939,7 +1939,6 @@ var Result = Backbone.Model.extend({
     var output = this.get('net').run(this.get('normalizeInput'));
     var targetKey = Object.keys(output)[0]
     this.set('targetOutputRealValue', this.get('metaHash').colNameArray[this.get('metaHash').target].normalizedToReal(output[targetKey]));
-    console.log('from update');
     this.trigger('change:targetOutputRealValue');
   }
 });
