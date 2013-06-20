@@ -21,6 +21,7 @@ var MetaDataView = Backbone.View.extend({
     console.log('normalizing data');
     this.model.normalizeData();
     console.log('done normalizing data')
+    this.model.trainOnData();
   },
 
   parseTableClick: function(event){
