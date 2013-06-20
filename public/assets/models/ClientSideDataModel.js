@@ -1926,7 +1926,8 @@ var Result = Backbone.Model.extend({
     input: {},
     normalizeInput: {},
     targetOutputRealValue: null,
-    name: null
+    name: null,
+    error: null
   },
   initialize: function(){
     //viewId
@@ -1946,23 +1947,30 @@ var Result = Backbone.Model.extend({
     this.trigger('change:targetOutputRealValue');
   },
   postResult: function(name){
+    //using attributes not to setoff the trigger
     this.attributes.name = name;
-    this.save();
+    this.attributes.meta_data = this.get('metaHash').colNameArray;
+    this.attributes.trained_function = this.get('net').toFunction().toString();
+
+    var self = this;
+    console.log('save status: ',
+      this.save(null,
+      {
+        wait: true,
+        success: function(){
+          self.error = null;
+        },
+        error: function(model, xhr, options){
+          self.error = JSON.stringify({'model': model, 'xhr': xhr, 'options': options});
+          self.trigger('updateStatus');
+        }
+      })
+    );
   },
   toJSON : function(){
-    tempModel = this.clone();
-    delete tempModel.attributes.input;
-    delete tempModel.attributes.normalizeInput;
-    delete tempModel.attributes.targetOutputRealValue;
-    tempModel.attributes.metaData = this.get('metaHash').colNameArray;
-    delete tempModel.attributes.metaHash;
-    delete tempModel.attributes.viewId;
-    delete tempModel.attributes.realOutput;
-    tempModel.attributes.trained_function = this.get('net');
-    delete tempModel.attributes.net;
-    return tempModel.attributes;
+    var attrsForServer = _.clone(this.attributes);
+    attrsForServer = _.pick(attrsForServer, 'name', 'meta_data', 'trained_function');
+
+    return attrsForServer;
   }
 });
-
-
-

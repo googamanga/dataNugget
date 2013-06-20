@@ -63,6 +63,10 @@
     <!--modles-->
     <script src="assets/models/ClientSideDataModel.js"></script>
 
+    <!--routes-->
+    <script src="assets/routes/Routes.js"></script>
+
+
   </head>
 
   <body>
@@ -230,7 +234,7 @@
         <div class="span2">
             <div class="well sidebar-nav">
               <ul class="nav nav-list">
-                <li class="nav-header">Sidear</li>
+                <li class="nav-header">Trained Nets</li>
                 <li class="active"><a href="#"></a></li>
                 <li><a href="#">Link</a></li>
                 <li><a href="#">Link</a></li>
@@ -263,6 +267,11 @@
       <!-- insertDataView = new InsertDataView({model: new InserDataModel}); -->
       <script>
         $(document).ready(function(){
+
+          var router = new Router();
+
+          Backbone.history.start();
+
           clientData = new ClientSideDataModel();
           //for testing start
           clientData.get('metaHash').target = 4;
