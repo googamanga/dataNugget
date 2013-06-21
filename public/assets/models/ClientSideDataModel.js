@@ -1835,20 +1835,8 @@ var ClientSideDataModel = Backbone.Model.extend({
         }
 
         for(i = 0; i < metaArray.length; i++){
-          metaArray[i].realToNormalized = function(realNum){
-            if(this.type === 'continuous'){
-              return (realNum - this.min) / (this.max - this.min);
-            } else if(metaArray[i].type === 'discrete'){
-              throw new Error("discrete not handled yet!");// TODO
-            } else { throw new Error('unknown type from metaArray[i].type: ' + metaArray[i].type) }
-          };
-          metaArray[i].normalizedToReal = function(normalizedNum){
-            if(this.type === 'continuous'){
-              return normalizedNum * (this.max - this.min) + this.min;
-            } else if(metaArray[i].type === 'discrete'){
-              throw new Error("discrete not handled yet!");// TODO
-            } else { throw new Error('unknown type from metaArray[i].type: ' + metaArray[i].type) }
-          };
+          metaArray[i].realToNormalized = lib.realToNormalized;
+          metaArray[i].normalizedToReal = lib.normalizedToReal
         }
         // return JSON.stringify(objArr, null, "\t");
         console.log('cvs to OBJECT complete!');
@@ -1935,15 +1923,16 @@ var Result = Backbone.Model.extend({
     //metaHash
     //net
   },
-  update: function(input){
+  update: function(input, metaHash){
+      metaHash = metaHash || this.get('metaHash');
     this.set('input', input);
     for(var key in input){
-      var index = this.get('metaHash').nameIndexHash[key];
-      this.get('normalizeInput')[key] = this.get('metaHash').colNameArray[index].realToNormalized(this.get('input')[key]);
+      var index = metaHash.nameIndexHash[key];
+      this.get('normalizeInput')[key] = metaHash.colNameArray[index].realToNormalized(this.get('input')[key]);
     }
     var output = this.get('net').run(this.get('normalizeInput'));
     var targetKey = Object.keys(output)[0]
-    this.set('targetOutputRealValue', this.get('metaHash').colNameArray[this.get('metaHash').target].normalizedToReal(output[targetKey]));
+    this.set('targetOutputRealValue', this.get('metaHash').colNameArray[metaHash.target].normalizedToReal(output[targetKey]));
     this.trigger('change:targetOutputRealValue');
   },
   postResult: function(name){
@@ -1969,8 +1958,27 @@ var Result = Backbone.Model.extend({
   },
   toJSON : function(){
     var attrsForServer = _.clone(this.attributes);
-    attrsForServer = _.pick(attrsForServer, 'name', 'meta_data', 'trained_function');
+    attrsForServer.target = +attrsForServer.metaHash.target;
+    attrsForServer = _.pick(attrsForServer, 'name', 'meta_data', 'target', 'trained_function');
 
     return attrsForServer;
+  },
+  parse: function(response, options){
+    var attrs = response;
+    attrs.error = null;
+    // attrs.net??
+    attrs.normalizeInput
+    attrs.metaHash = {};
+    attrs.metaHash.colNameArray = _.clone(attrs.meta_data);
+    attrs.metaHash.target = attrs.target;
+    delete attrs.target;
+    for(var i = 0; i < attrs.metaHash.colNameArray.length; i++){
+      attrs.metaHash.colNameArray[i].normalizedToReal = lib.normalizedToReal;
+      attrs.metaHash.colNameArray[i].realToNormalized = lib.realToNormalized;
+    }
+    return attrs; 
   }
 });
+
+
+

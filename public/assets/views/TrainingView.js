@@ -103,7 +103,7 @@ var UserInput = Backbone.View.extend({
   },
 
   submitHandler: function(event) {
-    // Stops the form form submitting and refreshing the page
+    // Stops the form from submitting and refreshing the page
     event.preventDefault();
 
     var input = {};
