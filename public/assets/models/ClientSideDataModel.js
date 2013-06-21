@@ -1930,6 +1930,7 @@ var Result = Backbone.Model.extend({
       var index = metaHash.nameIndexHash[key];
       this.get('normalizeInput')[key] = metaHash.colNameArray[index].realToNormalized(this.get('input')[key]);
     }
+    debugger
     var output = this.get('net').run(this.get('normalizeInput'));
     var targetKey = Object.keys(output)[0]
     this.set('targetOutputRealValue', this.get('metaHash').colNameArray[metaHash.target].normalizedToReal(output[targetKey]));
@@ -1971,11 +1972,14 @@ var Result = Backbone.Model.extend({
     attrs.metaHash = {};
     attrs.metaHash.colNameArray = _.clone(attrs.meta_data);
     attrs.metaHash.target = attrs.target;
+    attrs.metaHash.nameIndexHash = {};
     delete attrs.target;
     for(var i = 0; i < attrs.metaHash.colNameArray.length; i++){
       attrs.metaHash.colNameArray[i].normalizedToReal = lib.normalizedToReal;
       attrs.metaHash.colNameArray[i].realToNormalized = lib.realToNormalized;
+      attrs.metaHash.nameIndexHash[attrs.metaHash.colNameArray[i].name] = i;
     }
+    debugger
     return attrs; 
   }
 });

@@ -11,15 +11,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130621222858) do
+ActiveRecord::Schema.define(:version => 20130621232402) do
 
   create_table "data_sets", :force => true do |t|
     t.text     "meta_data"
-    t.text     "trained_function"
     t.string   "name"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
     t.integer  "target"
+    t.text     "net"
   end
 
 end
