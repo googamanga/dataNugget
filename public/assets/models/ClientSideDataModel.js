@@ -1798,8 +1798,12 @@ var ClientSideDataModel = Backbone.Model.extend({
             metaArray[i].max = 0;
             metaArray[i].min = null;
           } else if(metaArray[i].type === 'discrete'){
-            throw new Error("discrete not handled yet!");// TODO
-          } else { throw new Error('unknown type from metaArray[i].type: ' + metaArray[i].type) }
+            alert('Type: "'+metaArray[i].type +'" exists in column: "' + metaArray[i].name +
+              '", This type is still a work in progress, please convert the column into a continuous type.');
+          } else {
+            alert('Unexpected type: "'+metaArray[i].type +'" exists in column: "' + metaArray[i].name +
+              '", please pick a valid type or skip the column.');
+          }
         }
 
         for (i = 1; i < csvRows.length; i++)
@@ -1861,7 +1865,7 @@ var ClientSideDataModel = Backbone.Model.extend({
     var metaHash = this.get('metaHash');
     var realDiffSum = 0;
     var normalizedDiffSum = 0;
-    var text = "Date: " + Date() + "\n";
+    // var text = "Date: " + Date() + "\n";
     for(var index in indexHash){
       if(index === 'count') {continue}
       var sampleInput = this.get('normalizedObject')[index].input;
@@ -1881,23 +1885,14 @@ var ClientSideDataModel = Backbone.Model.extend({
       //calculate diff
       var normalizedDiff = Math.abs(output[targetKey] - expectedOutput);
       var realDiff = Math.abs(realGivenOutput - realExpectedOutput);
-      text = text + 'index: ' + index +
-              ' input: ' +JSON.stringify(realSampleInput) +
-              " output: " + JSON.stringify(realExpectedOutput) +
-              " actual output: " + Math.round(realGivenOutput * 100) / 100 +
-              " actual Diff: " + Math.round(realDiff * 100) / 100 +
-              " normalized Diff: " + Math.round(normalizedDiff * 10000) / 100 + "%\n";
-      normalizedDiffSum += normalizedDiff;
       realDiffSum += realDiff;
 
     }
-    var averageNormalizedDiff = normalizedDiffSum / indexHash.count;
-    var averageRealDiff = realDiffSum / indexHash.count;
-    text = "average normalized difference : " + Math.round(averageNormalizedDiff * 10000) / 100 + "%\n" + text;
-    text = "average real difference : " + Math.round(averageRealDiff * 100) / 100 + "\n" + text;
+    this.averageRealDiff = realDiffSum / indexHash.count;
+
     this.get('results').add(new Result({
       viewId: "result-" + this.get('results').length,
-      realOutput: text,
+      averageRealDiff: this.averageRealDiff,
       metaHash: this.get('metaHash'),
       net: net}));
   }
@@ -1922,6 +1917,7 @@ var Result = Backbone.Model.extend({
     //realOutput
     //metaHash
     //net
+    //averageRealDiff
   },
   update: function(input, metaHash){
       metaHash = metaHash || this.get('metaHash');
@@ -1930,7 +1926,6 @@ var Result = Backbone.Model.extend({
       var index = metaHash.nameIndexHash[key];
       this.get('normalizeInput')[key] = metaHash.colNameArray[index].realToNormalized(this.get('input')[key]);
     }
-    debugger
     var output;
     if(this.get('net').run){
       output = this.get('net').run(this.get('normalizeInput'));
@@ -1979,7 +1974,8 @@ var Result = Backbone.Model.extend({
   toJSON : function(){
     var attrsForServer = _.clone(this.attributes);
     attrsForServer.target = +attrsForServer.metaHash.target;
-    attrsForServer = _.pick(attrsForServer, 'name', 'meta_data', 'target', 'trained_function', 'net');
+    attrsForServer.average_real_diff = +attrsForServer.averageRealDiff;
+    attrsForServer = _.pick(attrsForServer, 'name', 'meta_data', 'target', 'trained_function', 'net', 'average_real_diff');
 
     return attrsForServer;
   },
@@ -1991,6 +1987,7 @@ var Result = Backbone.Model.extend({
     attrs.metaHash = {};
     attrs.metaHash.colNameArray = _.clone(attrs.meta_data);
     attrs.metaHash.target = attrs.target;
+    attrs.averageRealDiff = attrs.average_real_diff;
     attrs.metaHash.nameIndexHash = {};
     delete attrs.target;
     for(var i = 0; i < attrs.metaHash.colNameArray.length; i++){
@@ -1998,10 +1995,6 @@ var Result = Backbone.Model.extend({
       attrs.metaHash.colNameArray[i].realToNormalized = lib.realToNormalized;
       attrs.metaHash.nameIndexHash[attrs.metaHash.colNameArray[i].name] = i;
     }
-    debugger
     return attrs; 
   }
 });
-
-
-

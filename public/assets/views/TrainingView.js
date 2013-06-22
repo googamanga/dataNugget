@@ -45,7 +45,7 @@ var InternalTrainingViews = Backbone.View.extend({
     //crete viewId
     var viewId = 'view-' + model.get('viewId');
     //add empty div to results container
-    var $resultEl = $("<div id='"+ viewId + "'>Result group Id: " + viewId + "</div>");
+    var $resultEl = $("<div id='"+ viewId + "'></div>");
     $resultEl.addClass('hide');
     //assign div to new View
     this.$el.append($resultEl);
@@ -61,6 +61,9 @@ var ResultView = Backbone.View.extend({
   render: function(){
     this.$el.removeClass('hide');
 
+    if(clientData.get('results').length > 1 ){
+      this.$el.append('<hr size="20px">');
+    }
     this.$el.append('<div class="sampleData hide"></div>');
     this.sampleData = new SampleData({model: this.model, el: this.$('.sampleData')}).render();
 
@@ -77,12 +80,13 @@ var ResultView = Backbone.View.extend({
 
 var SampleData = Backbone.View.extend({
   render: function(){
-    $textarea = $('<textarea rows="10">');
-    $textarea.text(this.model.get('realOutput'));
-    $textarea.addClass('span12');
 
-    this.$el.append($textarea);
-    this.$el.removeClass('hide');
+    // $textarea = $('<textarea rows="10">');
+    // $textarea.text(this.model.get('realOutput'));
+    // $textarea.addClass('span11');
+
+    // this.$el.append($textarea);
+    // this.$el.removeClass('hide');
     return this;
   }
 });
@@ -123,6 +127,9 @@ var UserInput = Backbone.View.extend({
     }));
 
     this.$el.append('<p>Please insert all of your input values and then hit enter</p>');
+    this.$el.append('<p>The average difference during sampling for this neural network is: <strong>' +
+     Math.round(this.model.attributes.averageRealDiff * 100) / 100 +'</strong> units in the <strong>'+
+     this.model.get('metaHash').colNameArray[this.model.get('metaHash').target].name +'</strong> column</p>');
     this.$el.append($readyHtml);
     this.$el.removeClass('hide');
 

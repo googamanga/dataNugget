@@ -27,7 +27,7 @@ var SubmitTrainedNetView = Backbone.View.extend({
       setTimeout(function(){
         self.status = 'saved';
         self.render();
-      }, 2000);
+      }, 1000);
     } else {
       this.status = 'error';
     }
@@ -45,7 +45,9 @@ var SubmitTrainedNetView = Backbone.View.extend({
     } else if(this.status === 'saving'){
       this.$el.html('Saving');
     } else if(this.status === 'saved'){
-      this.$el.html('Saved!');
+      var domain = window.location.host
+      var path = '#'+ this.model.get('name') + '/' + this.model.id
+      this.$el.html('Saved! This is the link to your run: <a href="'+ path +'">'+ domain + '/' + path + '</a>');
     } else if(this.status === 'error'){
       this.$el.html('<form class="form-inline">' +
                         '<input required type="text" class="netNameInput" placeholder="Trained Net Name">' +

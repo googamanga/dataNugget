@@ -7,7 +7,7 @@ var Router = Backbone.Router.extend({
       console.log('router running');
       //hide other
     },
-    'model/:name/:id': function(name, id){
+    ':name/:id': function(name, id){
       $('#router-home').addClass('hide');
       $('#router-trained-model').removeClass('hide');
       var resultFromServer = new Result({id: id});
