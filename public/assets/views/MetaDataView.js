@@ -35,10 +35,11 @@ var MetaDataView = Backbone.View.extend({
 
   render: function() {
     if(this.show === true){
+      this.$el.removeClass('hide');
       this.template = $("#meta-data-work-template").html();
       this.$el.html(_.template(this.template, {'metaHash': this.model.get('metaHash')}));
     } else {
-      this.$el.html('<h2>Massage the Data</h2>');
+      this.$el.addClass('hide');
     }
     console.log('meta table rendered');
     return this;

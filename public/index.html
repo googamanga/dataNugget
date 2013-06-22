@@ -203,6 +203,22 @@
                 <% } %>
               <% } %>
             </tr>
+            <tr>
+              <td><strong>Trained Minimum</strong></td>
+              <% for(var i = 0; i < metaHash.colNameArray.length; i++) { %>
+                <% if(metaHash.colNameArray[i].min && +metaHash.target !== i){ %>
+                  <td><%= metaHash.colNameArray[i].min %></td>
+                <% } %>
+              <% } %>
+            </tr>
+            <tr>
+              <td><strong>Trained Maximum</strong></td>
+              <% for(var i = 0; i < metaHash.colNameArray.length; i++) { %>
+                <% if(metaHash.colNameArray[i].max && +metaHash.target !== i){ %>
+                  <td><%= metaHash.colNameArray[i].max %></td>
+                <% } %>
+              <% } %>
+            </tr>
           </tbody>
         </table>
         <button class="btn btn-primary">Predict!</button>
@@ -220,11 +236,11 @@
           <a class="brand" href="#">Data Nugget</a>
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right">
-              Logged in as <a href="#" class="navbar-link">Alex Gaputin</a>
+              Created by <a href="http://www.linkedin.com/in/alexgaputin" class="navbar-link">Alex Gaputin</a>
             </p>
             <ul class="nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="#about">About</a></li>
+              <li class="active"><a href="">Home</a></li>
+              <!-- <li><a href="#about">About</a></li> -->
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -243,7 +259,7 @@
             <div id='insert-raw-csv' class="hero-unit"></div>
             <div id='meta-data-work' class="hero-unit"></div>
             <div id='normalized-data' class="hero-unit hide"></div>
-            <div id='training-view' class="hero-unit">
+            <div id='training-view' class="hero-unit hide">
               <h2>Train the Neural Network</h2>
               <div class="progress hide">
                   <div class="bar"></div>
