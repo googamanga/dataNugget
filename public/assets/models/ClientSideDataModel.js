@@ -1931,7 +1931,26 @@ var Result = Backbone.Model.extend({
       this.get('normalizeInput')[key] = metaHash.colNameArray[index].realToNormalized(this.get('input')[key]);
     }
     debugger
-    var output = this.get('net').run(this.get('normalizeInput'));
+    var output;
+    if(this.get('net').run){
+      output = this.get('net').run(this.get('normalizeInput'));
+    } else {
+      output = (function(net, inputs){  // copied from toFunction from Brain.js
+          for(var i = 1; i < net.layers.length; i++) {
+            var layer = net.layers[i];
+            var outputs = {};
+            for(var id in layer) {
+              var node = layer[id];
+              var sum = node.bias;
+              for(var iid in node.weights)
+                sum += node.weights[iid] * inputs[iid];
+              outputs[id] = (1/(1 + Math.exp(-sum)));
+            }
+            inputs = outputs;
+          }
+        return outputs;
+      })(this.get('net'), this.get('normalizeInput'));
+    }
     var targetKey = Object.keys(output)[0]
     this.set('targetOutputRealValue', this.get('metaHash').colNameArray[metaHash.target].normalizedToReal(output[targetKey]));
     this.trigger('change:targetOutputRealValue');
@@ -1960,7 +1979,7 @@ var Result = Backbone.Model.extend({
   toJSON : function(){
     var attrsForServer = _.clone(this.attributes);
     attrsForServer.target = +attrsForServer.metaHash.target;
-    attrsForServer = _.pick(attrsForServer, 'name', 'meta_data', 'target', 'trained_function');
+    attrsForServer = _.pick(attrsForServer, 'name', 'meta_data', 'target', 'trained_function', 'net');
 
     return attrsForServer;
   },

@@ -15,7 +15,7 @@ var Router = Backbone.Router.extend({
       resultFromServer.fetch({
         success: function(){
           console.log('pull in data from server', JSON.stringify(resultFromServer));
-          Router.deleteMe = new UserInput({model: resultFromServer, el: $('#router-trained-model')}).render();
+          new UserInput({model: resultFromServer, el: $('#router-trained-model')}).render();
           // var prediction = resultFromServer.predict({});
           //hide home
         }
