@@ -236,7 +236,9 @@
           <a class="brand" href="#">Data Nugget</a>
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right">
-              Created by <a href="http://www.linkedin.com/in/alexgaputin" class="navbar-link">Alex Gaputin</a>
+              Created by <a href="http://www.linkedin.com/in/alexgaputin" class="navbar-link">
+                <strong style='font-size: 150%'>Alex Gaputin</strong>
+              </a>
             </p>
             <ul class="nav">
               <li class="active"><a href="">Home</a></li>
@@ -251,7 +253,10 @@
       
         <div class="span12">
           <h1>Welcome to DataNugget!  </h1>
-          <h3>The simplest way to mine your data!</h3>
+          <h3>A simple way to mine your data</h3>
+          <h4>This is just a prototype, it is recommended that you simplify your input by only including numbered data and relatively small number of columns. </h4>
+          <h4>Some default data is provided for you. More information about it can be read <a href='http://www.scientific-consultants.com/nnbd.html'>here</a></h4>
+          <h4>The choices for massaging this data have also been preselected for you, which you can see simply by clicking the button below!</h4>
           <div id='router-trained-model' class='hide'>
 
           </div>
@@ -270,12 +275,6 @@
         </div><!--/span-->
       </div><!--/row-->
 
-      <hr>
-
-      <footer>
-        <p>&copy; Awesome Co. 2013</p>
-      </footer>
-
       <!-- insertDataView = new InsertDataView({model: new InserDataModel}); -->
       <script>
         $(document).ready(function(){
@@ -285,16 +284,16 @@
           Backbone.history.start();
 
           clientData = new ClientSideDataModel();
-          //for testing start
-          // clientData.get('metaHash').target = 4;
-          // clientData.get('metaHash').colNameArray[1].type = "continuous";
-          // clientData.get('metaHash').colNameArray[1].skip = false;
-          // clientData.get('metaHash').colNameArray[2].type = "continuous";
-          // clientData.get('metaHash').colNameArray[2].skip = false;
-          // clientData.get('metaHash').colNameArray[3].type = "continuous";
-          // clientData.get('metaHash').colNameArray[3].skip = false;
-          // clientData.get('metaHash').colNameArray[4].type = "continuous";
-          // clientData.get('metaHash').colNameArray[4].skip = false;
+          //for demo
+          clientData.get('metaHash').target = 4;
+          clientData.get('metaHash').colNameArray[1].type = "continuous";
+          clientData.get('metaHash').colNameArray[1].skip = false;
+          clientData.get('metaHash').colNameArray[2].type = "continuous";
+          clientData.get('metaHash').colNameArray[2].skip = false;
+          clientData.get('metaHash').colNameArray[3].type = "continuous";
+          clientData.get('metaHash').colNameArray[3].skip = false;
+          clientData.get('metaHash').colNameArray[4].type = "continuous";
+          clientData.get('metaHash').colNameArray[4].skip = false;
           // //for testing end
           var insertDataView = new InsertDataView({model: clientData});
           var metaDataView = new MetaDataView({model: clientData});
