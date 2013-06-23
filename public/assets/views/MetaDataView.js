@@ -18,6 +18,7 @@ var MetaDataView = Backbone.View.extend({
   },
 
   normalizeRawData: function(){
+    $('#training-view').removeClass('hide');
     console.log('normalizing data');
     this.model.normalizeData();
     console.log('done normalizing data')

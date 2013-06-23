@@ -1632,6 +1632,7 @@ var ClientSideDataModel = Backbone.Model.extend({
       var keys = Object.keys(inputHash);
       for(var j = 0; j < keys.length; j++){
         var name = keys[j];
+        if(specializedData[metaHash.nameIndexHash[name]] === undefined) { debugger }
         specializedData[metaHash.nameIndexHash[name]].unNormalized.push(inputHash[name]);
         inputHash[name] = metaArray[metaHash.nameIndexHash[name]].realToNormalized(inputHash[name]);
         specializedData[metaHash.nameIndexHash[name]].normalized.push(inputHash[name]);
@@ -1702,14 +1703,13 @@ var ClientSideDataModel = Backbone.Model.extend({
     {
       var chunk = line[i].replace(/^[\s]*|[\s]*$/g, "");
       var quote = "";
-      if (chunk.charAt(0) == '"' || chunk.charAt(0) == "'") quote = chunk.charAt(0);
-      if (quote != "" && chunk.charAt(chunk.length - 1) == quote) quote = "";
+      if (chunk.charAt(0) == '"') quote = chunk.charAt(0);
       if (quote != "")
       {
         var j = i + 1;
         if (j < line.length) chunk = line[j].replace(/^[\s]*|[\s]*$/g, "");
-        while (j < line.length && chunk.charAt(chunk.length - 1) != quote)
-        {
+        while ((j < line.length) && (chunk.charAt(chunk.length - 1) != quote) && line[j] !== undefined){
+          if(j === line.length - 1) { debugger}
           line[i] += ',' + line[j];
           line.splice(j, 1);
           chunk = line[j].replace(/[\s]*$/g, "");

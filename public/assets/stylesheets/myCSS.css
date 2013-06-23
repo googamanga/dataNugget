@@ -14,3 +14,10 @@
 td,th {
   text-align: center !important;
 }
+body {
+	padding-bottom:39.6px;
+}
+/*footer {
+  bottom:0;
+}
+*/

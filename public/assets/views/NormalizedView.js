@@ -4,8 +4,6 @@ var NormalizedView = Backbone.View.extend({
 
   show: false,
 
-  active: 1,
-
   events: {
     "click #normalized_data_nav": "parseTableClick",
     "click #trainOnData": "trainOnData",
