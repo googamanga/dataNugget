@@ -75,7 +75,11 @@
   <body>
     <script type="text/html" id='insert-raw-csv-template'>
       <h2>Insert csv data!</h2>
-      <textarea id='csvInput' class='span10' rows='10'><%= raw_csv_data %></textarea>
+      <h4>This is just a prototype, it is recommended that you simplify your input by only including numbered data and relatively <br>
+      small number of columns. </h4>
+      <h4>Some default data is provided for you. More information about it can be read <a href='http://www.scientific-consultants.com/nnbd.html'>here</a></h4>
+      <h4>The choices for massaging this data have also been preselected for you, which you can see simply by clicking the button below!</h4>
+      <textarea id='csvInput' class='span11' rows='10'><%= raw_csv_data %></textarea>
       <button id='massageCsvButton' class="btn btn-large btn-primary" type="button">Massage the Data</button>
     </script>
     <script type="text/html" id='meta-data-work-template'>
@@ -254,9 +258,6 @@
         <div class="span12">
           <h1>Welcome to DataNugget!  </h1>
           <h3>A simple way to mine your data</h3>
-          <h4>This is just a prototype, it is recommended that you simplify your input by only including numbered data and relatively small number of columns. </h4>
-          <h4>Some default data is provided for you. More information about it can be read <a href='http://www.scientific-consultants.com/nnbd.html'>here</a></h4>
-          <h4>The choices for massaging this data have also been preselected for you, which you can see simply by clicking the button below!</h4>
           <div id='router-trained-model' class='hide'>
 
           </div>
